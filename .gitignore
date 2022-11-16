@@ -11,6 +11,7 @@ data/
 weights/
 todolist.txt
 stuff/
+dino/*.pth
 
 # Distribution / packaging
 .Python
