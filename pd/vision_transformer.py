@@ -25,6 +25,13 @@ from paddle.nn.initializer import Constant
 from paddle import ParamAttr
 
 
+def vit_small(patch_size=16, **kwargs):
+    model = VisionTransformer(
+        patch_size=patch_size, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4,
+        qkv_bias=True, norm_layer=partial(nn.LayerNorm, epsilon=1e-6), **kwargs)
+    return model
+
+
 def drop_path(x, drop_prob: float = 0., training: bool = False):
     if drop_prob == 0. or not training:
         return x
@@ -299,53 +306,3 @@ class VisionTransformer(nn.Layer):
                 output.append(self.norm(x))
         return output
 
-
-def vit_small(patch_size=16, **kwargs):
-    model = VisionTransformer(
-        patch_size=patch_size, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4,
-        qkv_bias=True, norm_layer=partial(nn.LayerNorm, epsilon=1e-6), **kwargs)
-    return model
-
-
-class DINOHead(nn.Layer):
-    def __init__(self, in_dim, out_dim, use_bn=False, norm_last_layer=True, nlayers=3, hidden_dim=2048,
-                 bottleneck_dim=256):
-        super().__init__()
-        nlayers = max(nlayers, 1)
-        if nlayers == 1:
-            self.mlp = nn.Linear(in_dim, bottleneck_dim)
-        else:
-            layers = [nn.Linear(in_dim, hidden_dim)]
-            if use_bn:
-                layers.append(nn.BatchNorm1D(hidden_dim))
-            layers.append(nn.GELU())
-            for _ in range(nlayers - 2):
-                layers.append(nn.Linear(hidden_dim, hidden_dim))
-                if use_bn:
-                    layers.append(nn.BatchNorm1D(hidden_dim))
-                layers.append(nn.GELU())
-            layers.append(nn.Linear(hidden_dim, bottleneck_dim))
-            self.mlp = nn.Sequential(*layers)
-        self.apply(self._init_weights)
-        self.last_layer = nn.utils.weight_norm(nn.Linear(bottleneck_dim, out_dim, bias_attr=False), dim=1)
-        self.last_layer.weight_g.set_value(
-            np.ones(self.last_layer.weight_g.shape, dtype="float32")
-        )
-        if norm_last_layer:
-            self.last_layer.weight_g.requires_grad = False
-
-    def _init_weights(self, m):
-        if isinstance(m, nn.Linear):
-            m.weight = paddle.create_parameter(
-                shape=m.weight.shape,
-                dtype='float32',
-                default_initializer=paddle.nn.initializer.TruncatedNormal(std=.02)
-            )
-            if isinstance(m, nn.Linear) and m.bias is not None:
-                m.bias.set_value(np.zeros(m.bias.shape, dtype="float32"))
-
-    def forward(self, x):
-        x = self.mlp(x)
-        x = nn.functional.normalize(x, axis=-1, p=2)
-        x = self.last_layer(x)
-        return x

@@ -1,9 +1,27 @@
 import argparse
 import json
+import math
+import sys
+import utils
+
+import paddle.optimizer
+import paddle.distributed as dist
+from paddle.distributed import fleet
+from transforms import DataAugmentationDINO
+from paddle.vision.datasets import ImageFolder
+from vision_transformer import vit_small
+from models import MultiCropWrapper, DINOHead
+from loss import DINOLoss
+import os
+import time
+import datetime
+from lib import get_args_from
 
 
 def get_args_parser():
     parser = argparse.ArgumentParser('DINO', add_help=False)
+    parser.add_argument('--load_args', type=bool, default=True,
+                        help="load args from 'args.json'")
 
     # Model parameters
     parser.add_argument('--arch', default='vit_small', type=str,
@@ -64,6 +82,7 @@ def get_args_parser():
         with the batch size, and specified here for a reference batch size of 256.""")
     parser.add_argument("--warmup_epochs", default=10, type=int,
         help="Number of epochs for the linear learning-rate warm up.")
+    parser.add_argument('--base_lr', type=float, default=0.00075, help="Base value of learning rate.")
     parser.add_argument('--min_lr', type=float, default=1e-6, help="""Target LR at the
         end of optimization. We use a cosine LR schedule with linear warmup.""")
     parser.add_argument('--optimizer', default='adamw', type=str,
@@ -83,6 +102,8 @@ def get_args_parser():
         Used for small local view cropping of multi-crop.""")
 
     # Misc
+    parser.add_argument('--resume', default=True, type=bool,
+                        help='If resume from checkpoint.')
     parser.add_argument('--data_path', default='./data/small', type=str,
         help='Please specify path to the ImageNet training data.')
     parser.add_argument('--output_dir', default=".", type=str, help='Path to save logs and checkpoints.')
@@ -95,19 +116,140 @@ def get_args_parser():
     return parser.parse_args()
 
 
-def get_args_from(path):
-    args = get_args_parser()
-    with open(path, 'r') as f:
-        resumed_args = json.load(f)
+def train_dino(args):
+    # ============ distributed env prepare ============
+    dist.init_parallel_env()
 
-    for k, v in resumed_args.items():
-        args.__dict__[k] = v
+    utils.fix_random_seeds(args.seed)
 
-    return args
+    # ============ preparing data  ============
+    transform = DataAugmentationDINO(
+        args.global_crops_scale,
+        args.local_crops_scale,
+        args.local_crops_number,
+    )
+    data_set = ImageFolder(args.data_path, transform=transform)
+    sampler = paddle.io.DistributedBatchSampler(
+        data_set, args.batch_size, shuffle=True, drop_last=True
+    )
+    data_loader = paddle.io.DataLoader(
+        data_set, batch_sampler=sampler, num_workers=args.num_workers
+    )
+    print(f"Data loaded: there are {len(data_set)} images.")
 
+    # ============ building student and teacher networks  ============
+    # only support vit_s8 and vit_s16 currently
+    student = vit_small(
+        patch_size=args.patch_size,
+        drop_path_rate=args.drop_path_rate,  # stochastic depth
+    )
+    teacher = vit_small(patch_size=args.patch_size)
+    embed_dim = student.embed_dim
 
-def train_dino():
-    ...
+    # multi-crop wrapper handles forward with inputs of different resolutions
+    student = MultiCropWrapper(
+        student, DINOHead(
+            embed_dim,
+            args.out_dim,
+            use_bn=args.use_bn_in_head,
+            norm_last_layer=args.norm_last_layer
+        )
+    )
+    teacher = MultiCropWrapper(
+        teacher,
+        DINOHead(embed_dim, args.out_dim, args.use_bn_in_head)
+    )
+
+    # vit_s8 and vit_s16 are batch norm free models. here, we don't check bn
+    teacher_without_ddp = teacher
+    student = paddle.DataParallel(student)
+    # teacher and student start with the same weights
+    teacher_without_ddp.load_state_dict(student.module.state_dict())
+    # there is no backpropagation through the teacher, so no need for gradients
+    for p in teacher.parameters():
+        p.requires_grad = False
+    print(f"Student and Teacher are built: they are both {args.arch} network.")
+
+    # ============ preparing loss ============
+    dino_loss = DINOLoss(
+        args.out_dim,
+        args.local_crops_number + 2,  # total number of crops = 2 global crops + local_crops_number
+        args.warmup_teacher_temp,
+        args.teacher_temp,
+        args.warmup_teacher_temp_epochs,
+        args.epochs,
+    ).cuda()
+
+    # ============ preparing optimizer ============
+    params_groups = utils.get_params_groups(student)
+    opt = paddle.optimizer.AdamW(params_groups)
+
+    # ============ init schedulers ... ============
+    lr_schedule = utils.cosine_scheduler(
+        args.base_lr,
+        args.min_lr,
+        args.epochs, len(data_loader),
+        warmup_epochs=args.warmup_epochs,
+    )
+    wd_schedule = utils.cosine_scheduler(
+        args.weight_decay,
+        args.weight_decay_end,
+        args.epochs, len(data_loader),
+    )
+    # momentum parameter is increased to 1. during training with a cosine schedule
+    momentum_schedule = utils.cosine_scheduler(args.momentum_teacher, 1,
+                                               args.epochs, len(data_loader))
+    print(f"Loss, optimizer and schedulers ready.")
+
+    # ============ optionally resume training ============
+    to_restore = {"epoch": 0}
+    if args.resume:
+        utils.restart_from_checkpoint(
+            os.path.join(args.output_dir, "full_checkpoint.pth"),
+            run_variables=to_restore,
+            student=student,
+            teacher=teacher,
+            optimizer=opt,
+            fp16_scaler=None,
+            dino_loss=dino_loss,
+        )
+    start_epoch = to_restore["epoch"]
+    start_time = time.time()
+
+    # ============ training ============
+    print("Starting DINO training!")
+    for epoch in range(start_epoch, args.epochs):
+        train_stats = train_one_epoch(
+            student, teacher, teacher_without_ddp, dino_loss,
+            data_loader, opt, lr_schedule, wd_schedule, momentum_schedule,
+            epoch, None, args
+        )
+
+        # ============ check point save ============
+        save_dict = {
+            'student': student.state_dict(),
+            'teacher': teacher.state_dict(),
+            'optimizer': opt.state_dict(),
+            'epoch': epoch + 1,
+            'args': args,
+            'dino_loss': dino_loss.state_dict(),
+        }
+        if epoch == args.epochs or epoch % args.saveckp_freq == 0:
+            if dist.get_rank() == 0:
+                path = os.path.join(args.output_dir, 'full_checkpoint.pth')
+                paddle.save(save_dict, path)
+
+        # ============ write train log ============
+        log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
+                     'epoch': epoch}
+        if dist.get_rank() == 0:
+            log_path = os.path.join(args.output_dir, "log.txt")
+            with open(log_path, "a") as f:
+                f.write(json.dumps(log_stats) + "\n")
+
+    total_time = time.time() - start_time
+    total_time_str = str(datetime.timedelta(seconds=int(total_time)))
+    print('Training time {}'.format(total_time_str))
 
 
 def train_one_epoch(
@@ -115,9 +257,53 @@ def train_one_epoch(
         optimizer, lr_schedule, wd_schedule, momentum_schedule, epoch,
         fp16_scaler, args):
 
+    metric_logger = utils.MetricLogger(" ")
+    for it, (images, _) in enumerate(data_loader):
+        # update weight decay and learning rate
+        # compute global training iteration
+        cur_iter_num = len(data_loader) * epoch + it
+        for i, param_group in enumerate(optimizer.param_groups):
+            param_group['learning_rate'] = lr_schedule[cur_iter_num]
+            if i == 0:
+                # only the first group is regularized
+                param_group["weight_decay"] = wd_schedule[cur_iter_num]
 
-    ...
+        # forward and compute dino loss
+        teacher_output = teacher(images[:2])  # only the 2 global views pass through the teacher
+        student_output = student(images)      # all views pass through the student
+        loss = dino_loss(student_output, teacher_output, epoch)
+
+        if not math.isfinite(loss.item()):
+            print("Loss is {}, stopping training".format(loss.item()), force=True)
+            sys.exit(1)
+
+        optimizer.clear_grad()
+
+        # student update
+        loss.backward()
+        utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
+        optimizer.step()
+
+        # EMA update for the teacher
+        with paddle.no_grad():
+            m = momentum_schedule[cur_iter_num]
+            for param_stu, params_tea in zip(student.parameters(), teacher_without_ddp.parameters()):
+                new_val = m * params_tea.numpy() + (1 - m) * param_stu.detach().numpy()
+                params_tea.set_value(new_val)
+
+        paddle.device.cuda.synchronize()
+        metric_logger.update(loss=loss.item())
+        metric_logger.update(lr=optimizer.param_groups[0]["lr"])
+        metric_logger.update(wd=optimizer.param_groups[0]["weight_decay"])
+
+    # gather the stats from all processes
+    metric_logger.synchronize_between_processes()
+    print("Averaged stats:", metric_logger)
+    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
 if __name__ == "__main__":
     args = get_args_parser()
+    if args.load_args:
+        get_args_from("../args.json", args)
+    train_dino(args)

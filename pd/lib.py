@@ -125,8 +125,7 @@ def get_eval_args():
     return parser.parse_args()
 
 
-def get_args_from(path):
-    args = get_args_parser()
+def get_args_from(path, args):
     with open(path, 'r') as f:
         resumed_args = json.load(f)
 
