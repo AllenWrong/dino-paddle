@@ -1,233 +1,265 @@
-[2022/12/17 17:37:54] root INFO: tea_out_0: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.909935106908961e-08
-[2022/12/17 17:37:54] root INFO: tea_out_1: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.968389243411366e-08
-[2022/12/17 17:37:54] root INFO: tea_out_2: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 3.277181193084289e-08
-[2022/12/17 17:37:54] root INFO: tea_out_3: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.4348997363385934e-08
-[2022/12/17 17:37:54] root INFO: tea_out_4: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.0901746817544335e-08
-[2022/12/17 17:37:54] root INFO: tea_out_5: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 3.471811282906856e-08
-[2022/12/17 17:37:54] root INFO: tea_out_6: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 9.967358494122891e-08
-[2022/12/17 17:37:54] root INFO: tea_out_7: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.891192493365452e-08
-[2022/12/17 17:37:54] root INFO: tea_out_8: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.326159590093084e-08
-[2022/12/17 17:37:54] root INFO: tea_out_9: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.103259408973827e-08
-[2022/12/17 17:37:54] root INFO: tea_out_10: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.016861841042555e-08
-[2022/12/17 17:37:54] root INFO: tea_out_11: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.833758613491227e-08
-[2022/12/17 17:37:54] root INFO: tea_out_12: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.93962931563874e-08
-[2022/12/17 17:37:54] root INFO: tea_out_13: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.684278399556206e-08
-[2022/12/17 17:37:54] root INFO: tea_out_14: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.8862288559139415e-08
-[2022/12/17 17:37:54] root INFO: tea_out_15: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 3.088167233045169e-08
-[2022/12/17 17:37:54] root INFO: stu_out_0: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.300520448756288e-08
-[2022/12/17 17:37:54] root INFO: stu_out_1: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.978650191058478e-08
-[2022/12/17 17:37:54] root INFO: stu_out_2: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0423840990370081e-07
-[2022/12/17 17:37:54] root INFO: stu_out_3: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.064608383671839e-07
-[2022/12/17 17:37:54] root INFO: stu_out_4: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.8017579003008e-08
-[2022/12/17 17:37:54] root INFO: stu_out_5: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 3.6077224763175764e-08
-[2022/12/17 17:37:54] root INFO: stu_out_6: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 9.192088157305989e-08
-[2022/12/17 17:37:54] root INFO: stu_out_7: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.5404832254262146e-07
-[2022/12/17 17:37:54] root INFO: stu_out_8: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.83809986412598e-08
-[2022/12/17 17:37:54] root INFO: stu_out_9: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0132269068208188e-07
-[2022/12/17 17:37:54] root INFO: stu_out_10: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.260741803818746e-08
-[2022/12/17 17:37:54] root INFO: stu_out_11: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.981543438338122e-08
-[2022/12/17 17:37:54] root INFO: stu_out_12: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.898705061710643e-08
-[2022/12/17 17:37:54] root INFO: stu_out_13: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.2806264250193635e-08
-[2022/12/17 17:37:54] root INFO: stu_out_14: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 3.33460725698842e-08
-[2022/12/17 17:37:54] root INFO: stu_out_15: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.361215554306909e-08
-[2022/12/17 17:37:54] root INFO: stu_out_16: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.258581932006564e-07
-[2022/12/17 17:37:54] root INFO: stu_out_17: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.3483914074186032e-07
-[2022/12/17 17:37:54] root INFO: stu_out_18: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.667698215778728e-08
-[2022/12/17 17:37:54] root INFO: stu_out_19: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.142049358004442e-08
-[2022/12/17 17:37:54] root INFO: stu_out_20: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.9041893040139257e-07
-[2022/12/17 17:37:54] root INFO: stu_out_21: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0076091427890788e-07
-[2022/12/17 17:37:54] root INFO: stu_out_22: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.7362614812554966e-07
-[2022/12/17 17:37:54] root INFO: stu_out_23: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.9778805437908886e-07
-[2022/12/17 17:37:54] root INFO: stu_out_24: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.723855973523314e-07
-[2022/12/17 17:37:54] root INFO: stu_out_25: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.935175362177688e-07
-[2022/12/17 17:37:54] root INFO: stu_out_26: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.374143168841329e-08
-[2022/12/17 17:37:54] root INFO: stu_out_27: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.654136086581275e-08
-[2022/12/17 17:37:54] root INFO: stu_out_28: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 3.184893841989833e-07
-[2022/12/17 17:37:54] root INFO: stu_out_29: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.830068682324054e-08
-[2022/12/17 17:37:54] root INFO: stu_out_30: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.559229686648905e-08
-[2022/12/17 17:37:54] root INFO: stu_out_31: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 9.92863320448123e-08
-[2022/12/17 17:37:54] root INFO: stu_out_32: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 3.7792278817505576e-07
-[2022/12/17 17:37:54] root INFO: stu_out_33: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.81801503535462e-08
-[2022/12/17 17:37:54] root INFO: stu_out_34: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.224279237519113e-08
-[2022/12/17 17:37:54] root INFO: stu_out_35: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0262914429404191e-07
-[2022/12/17 17:37:54] root INFO: stu_out_36: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.0710830262469244e-07
-[2022/12/17 17:37:54] root INFO: stu_out_37: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.386740926065613e-08
-[2022/12/17 17:37:54] root INFO: stu_out_38: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 9.545657064791158e-08
-[2022/12/17 17:37:54] root INFO: stu_out_39: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.2280194400536857e-07
-[2022/12/17 17:37:54] root INFO: stu_out_40: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.314010102594693e-08
-[2022/12/17 17:37:54] root INFO: stu_out_41: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.3329125181371637e-07
-[2022/12/17 17:37:54] root INFO: stu_out_42: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0090229096704206e-07
-[2022/12/17 17:37:54] root INFO: stu_out_43: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.343458393421315e-07
-[2022/12/17 17:37:54] root INFO: stu_out_44: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.487020651642524e-07
-[2022/12/17 17:37:54] root INFO: stu_out_45: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.297596399917893e-08
-[2022/12/17 17:37:54] root INFO: stu_out_46: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0717199927512411e-07
-[2022/12/17 17:37:54] root INFO: stu_out_47: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0370819580884927e-07
-[2022/12/17 17:37:54] root INFO: stu_out_48: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.875898701404367e-07
-[2022/12/17 17:37:54] root INFO: stu_out_49: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.5863864177845244e-07
-[2022/12/17 17:37:54] root INFO: stu_out_50: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.477121654465009e-07
-[2022/12/17 17:37:54] root INFO: stu_out_51: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.8617903663198376e-07
-[2022/12/17 17:37:54] root INFO: stu_out_52: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.6608714165377023e-07
-[2022/12/17 17:37:54] root INFO: stu_out_53: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.6501885009320176e-08
-[2022/12/17 17:37:54] root INFO: stu_out_54: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.908678239549772e-08
-[2022/12/17 17:37:54] root INFO: stu_out_55: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.4577167917195766e-07
-[2022/12/17 17:37:54] root INFO: stu_out_56: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.153960909050511e-07
-[2022/12/17 17:37:54] root INFO: stu_out_57: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.8857858208320977e-07
-[2022/12/17 17:37:54] root INFO: stu_out_58: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.62038842133461e-08
-[2022/12/17 17:37:54] root INFO: stu_out_59: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.1145817779834033e-07
-[2022/12/17 17:37:54] root INFO: stu_out_60: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.1376670272511547e-07
-[2022/12/17 17:37:54] root INFO: stu_out_61: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 9.31612404997395e-08
-[2022/12/17 17:37:54] root INFO: stu_out_62: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.375731386588086e-07
-[2022/12/17 17:37:54] root INFO: stu_out_63: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.868916825742417e-07
-[2022/12/17 17:37:54] root INFO: stu_out_64: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.651559575881038e-08
-[2022/12/17 17:37:54] root INFO: stu_out_65: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.622873792774044e-08
-[2022/12/17 17:37:54] root INFO: stu_out_66: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.167358179709481e-08
-[2022/12/17 17:37:54] root INFO: stu_out_67: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0291459062727881e-07
-[2022/12/17 17:37:54] root INFO: stu_out_68: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.380800682682093e-07
-[2022/12/17 17:37:54] root INFO: stu_out_69: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.886871388023792e-07
-[2022/12/17 17:37:54] root INFO: stu_out_70: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 9.193439609589404e-08
-[2022/12/17 17:37:54] root INFO: stu_out_71: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0678739670311188e-07
-[2022/12/17 17:37:54] root INFO: stu_out_72: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.965164965957229e-08
-[2022/12/17 17:37:54] root INFO: stu_out_73: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.2446668051779852e-07
-[2022/12/17 17:37:54] root INFO: stu_out_74: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.8687895432285586e-08
-[2022/12/17 17:37:54] root INFO: stu_out_75: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.6362930921332008e-07
-[2022/12/17 17:37:54] root INFO: stu_out_76: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.2824646944409324e-07
-[2022/12/17 17:37:54] root INFO: stu_out_77: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.912265687082254e-08
-[2022/12/17 17:37:54] root INFO: stu_out_78: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.2242696811881615e-07
-[2022/12/17 17:37:54] root INFO: stu_out_79: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.818600250975578e-07
-[2022/12/17 17:37:54] root INFO: stu_out_80: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.6226073284997256e-07
-[2022/12/17 17:37:54] root INFO: stu_out_81: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.077326185684797e-08
-[2022/12/17 17:37:54] root INFO: stu_out_82: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.365928146261467e-08
-[2022/12/17 17:37:54] root INFO: stu_out_83: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.3562747369633144e-07
-[2022/12/17 17:37:54] root INFO: stu_out_84: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.1581037284713602e-07
-[2022/12/17 17:37:54] root INFO: stu_out_85: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 6.507549699108495e-08
-[2022/12/17 17:37:54] root INFO: stu_out_86: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.85053289417192e-07
-[2022/12/17 17:37:54] root INFO: stu_out_87: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.477459007532161e-08
-[2022/12/17 17:37:54] root INFO: stu_out_88: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.0780439652080531e-07
-[2022/12/17 17:37:54] root INFO: stu_out_89: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.846646793841501e-07
-[2022/12/17 17:37:54] root INFO: stu_out_90: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 5.6683418847569556e-08
-[2022/12/17 17:37:54] root INFO: stu_out_91: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.5670138964196667e-07
-[2022/12/17 17:37:54] root INFO: stu_out_92: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.0315336491403286e-07
-[2022/12/17 17:37:54] root INFO: stu_out_93: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 4.13136902466249e-08
-[2022/12/17 17:37:54] root INFO: stu_out_94: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 7.93618397665341e-08
-[2022/12/17 17:37:54] root INFO: stu_out_95: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 8.595498002250679e-08
-[2022/12/17 17:37:54] root INFO: center_epoch_0: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 2.1363912861005474e-09
-[2022/12/17 17:37:54] root INFO: loss_epoch_0: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: False, value: 1.9073486328125e-06
-[2022/12/17 17:37:54] root INFO: center_epoch_1: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: True, value: 1.5884397130960792e-09
-[2022/12/17 17:37:54] root INFO: loss_epoch_1: 
-[2022/12/17 17:37:54] root INFO: 	mean diff: check passed: False, value: 1.430511474609375e-06
-[2022/12/17 17:37:54] root INFO: diff check failed
+[2022/12/19 17:53:07] root INFO: tea_out_0: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.2067629313605721e-06
+[2022/12/19 17:53:07] root INFO: tea_out_1: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.2821803920815e-06
+[2022/12/19 17:53:07] root INFO: tea_out_2: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.413098516422906e-06
+[2022/12/19 17:53:07] root INFO: tea_out_3: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.6644651168462588e-06
+[2022/12/19 17:53:07] root INFO: tea_out_4: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.983193669730099e-06
+[2022/12/19 17:53:07] root INFO: tea_out_5: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 2.8464598926802864e-06
+[2022/12/19 17:53:07] root INFO: tea_out_6: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.0792429065986653e-06
+[2022/12/19 17:53:07] root INFO: tea_out_7: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.1351991133778938e-06
+[2022/12/19 17:53:07] root INFO: tea_out_8: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.1685644949466223e-06
+[2022/12/19 17:53:07] root INFO: tea_out_9: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.2155246622569393e-06
+[2022/12/19 17:53:07] root INFO: tea_out_10: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.5691123280703323e-06
+[2022/12/19 17:53:07] root INFO: tea_out_11: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 9.250376820091333e-07
+[2022/12/19 17:53:07] root INFO: tea_out_12: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.9807839635177515e-06
+[2022/12/19 17:53:07] root INFO: tea_out_13: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 2.8809722607547883e-06
+[2022/12/19 17:53:07] root INFO: tea_out_14: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 9.027620535562164e-07
+[2022/12/19 17:53:07] root INFO: tea_out_15: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.020888589664537e-06
+[2022/12/19 17:53:07] root INFO: stu_out_0: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.665333345765248e-05
+[2022/12/19 17:53:07] root INFO: stu_out_1: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.951647760113701e-05
+[2022/12/19 17:53:07] root INFO: stu_out_2: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010124118125531822
+[2022/12/19 17:53:07] root INFO: stu_out_3: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010014431609306484
+[2022/12/19 17:53:07] root INFO: stu_out_4: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00014096561062615365
+[2022/12/19 17:53:07] root INFO: stu_out_5: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00023036703350953758
+[2022/12/19 17:53:07] root INFO: stu_out_6: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 7.495720637962222e-05
+[2022/12/19 17:53:07] root INFO: stu_out_7: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 7.110820297384635e-05
+[2022/12/19 17:53:07] root INFO: stu_out_8: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.803337889024988e-05
+[2022/12/19 17:53:07] root INFO: stu_out_9: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.747235551709309e-05
+[2022/12/19 17:53:07] root INFO: stu_out_10: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010642327833920717
+[2022/12/19 17:53:07] root INFO: stu_out_11: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010139525693375617
+[2022/12/19 17:53:07] root INFO: stu_out_12: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00013698112161364406
+[2022/12/19 17:53:07] root INFO: stu_out_13: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0002325507957721129
+[2022/12/19 17:53:07] root INFO: stu_out_14: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 7.193743658717722e-05
+[2022/12/19 17:53:07] root INFO: stu_out_15: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.803746509831399e-05
+[2022/12/19 17:53:07] root INFO: stu_out_16: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00012972454715054482
+[2022/12/19 17:53:07] root INFO: stu_out_17: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.465287100989372e-05
+[2022/12/19 17:53:07] root INFO: stu_out_18: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0001055625471053645
+[2022/12/19 17:53:07] root INFO: stu_out_19: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.097147994907573e-05
+[2022/12/19 17:53:07] root INFO: stu_out_20: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00016911218699533492
+[2022/12/19 17:53:07] root INFO: stu_out_21: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00021625806402880698
+[2022/12/19 17:53:07] root INFO: stu_out_22: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.524245251668617e-05
+[2022/12/19 17:53:07] root INFO: stu_out_23: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.703278631903231e-05
+[2022/12/19 17:53:07] root INFO: stu_out_24: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010800995369208977
+[2022/12/19 17:53:07] root INFO: stu_out_25: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.930420153774321e-05
+[2022/12/19 17:53:07] root INFO: stu_out_26: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010113551979884505
+[2022/12/19 17:53:07] root INFO: stu_out_27: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0001373744016746059
+[2022/12/19 17:53:07] root INFO: stu_out_28: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00017074617790058255
+[2022/12/19 17:53:07] root INFO: stu_out_29: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0002516093081794679
+[2022/12/19 17:53:07] root INFO: stu_out_30: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.989863999886438e-05
+[2022/12/19 17:53:07] root INFO: stu_out_31: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.879297143314034e-05
+[2022/12/19 17:53:07] root INFO: stu_out_32: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00012246743426658213
+[2022/12/19 17:53:07] root INFO: stu_out_33: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00015484973846469074
+[2022/12/19 17:53:07] root INFO: stu_out_34: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.352884080726653e-05
+[2022/12/19 17:53:07] root INFO: stu_out_35: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00012773570779245347
+[2022/12/19 17:53:07] root INFO: stu_out_36: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0001500114449299872
+[2022/12/19 17:53:07] root INFO: stu_out_37: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00023392992443405092
+[2022/12/19 17:53:07] root INFO: stu_out_38: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.749773456249386e-05
+[2022/12/19 17:53:07] root INFO: stu_out_39: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.914504774613306e-05
+[2022/12/19 17:53:07] root INFO: stu_out_40: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00015173932479228824
+[2022/12/19 17:53:07] root INFO: stu_out_41: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.188085823552683e-05
+[2022/12/19 17:53:07] root INFO: stu_out_42: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00011099602124886587
+[2022/12/19 17:53:07] root INFO: stu_out_43: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0001764101325534284
+[2022/12/19 17:53:07] root INFO: stu_out_44: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00014762673527002335
+[2022/12/19 17:53:07] root INFO: stu_out_45: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.000242288937442936
+[2022/12/19 17:53:07] root INFO: stu_out_46: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.300591485342011e-05
+[2022/12/19 17:53:07] root INFO: stu_out_47: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.916873826412484e-05
+[2022/12/19 17:53:07] root INFO: stu_out_48: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00011484778224257752
+[2022/12/19 17:53:07] root INFO: stu_out_49: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0001237209071405232
+[2022/12/19 17:53:07] root INFO: stu_out_50: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.92072164081037e-05
+[2022/12/19 17:53:07] root INFO: stu_out_51: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00021440816635731608
+[2022/12/19 17:53:07] root INFO: stu_out_52: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00014136296522337943
+[2022/12/19 17:53:07] root INFO: stu_out_53: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0002425792335998267
+[2022/12/19 17:53:07] root INFO: stu_out_54: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 5.7635625125840306e-05
+[2022/12/19 17:53:07] root INFO: stu_out_55: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 7.373798871412873e-05
+[2022/12/19 17:53:07] root INFO: stu_out_56: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.096784924622625e-05
+[2022/12/19 17:53:07] root INFO: stu_out_57: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.561827416997403e-05
+[2022/12/19 17:53:07] root INFO: stu_out_58: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0001077109482139349
+[2022/12/19 17:53:07] root INFO: stu_out_59: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00011276071745669469
+[2022/12/19 17:53:07] root INFO: stu_out_60: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0001495238539064303
+[2022/12/19 17:53:07] root INFO: stu_out_61: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00025077001191675663
+[2022/12/19 17:53:07] root INFO: stu_out_62: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.676864672452211e-05
+[2022/12/19 17:53:07] root INFO: stu_out_63: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.911635864526033e-05
+[2022/12/19 17:53:07] root INFO: stu_out_64: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.41228645388037e-05
+[2022/12/19 17:53:07] root INFO: stu_out_65: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010099812789121643
+[2022/12/19 17:53:07] root INFO: stu_out_66: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.797025995794684e-05
+[2022/12/19 17:53:07] root INFO: stu_out_67: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00011689493840094656
+[2022/12/19 17:53:07] root INFO: stu_out_68: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00015229175915010273
+[2022/12/19 17:53:07] root INFO: stu_out_69: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0002254915307275951
+[2022/12/19 17:53:07] root INFO: stu_out_70: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 7.868144894018769e-05
+[2022/12/19 17:53:07] root INFO: stu_out_71: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.731245230184868e-05
+[2022/12/19 17:53:07] root INFO: stu_out_72: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00013622156984638423
+[2022/12/19 17:53:07] root INFO: stu_out_73: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.017316915560514e-05
+[2022/12/19 17:53:07] root INFO: stu_out_74: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010083481902256608
+[2022/12/19 17:53:07] root INFO: stu_out_75: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00013620502431876957
+[2022/12/19 17:53:07] root INFO: stu_out_76: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00014561109128408134
+[2022/12/19 17:53:07] root INFO: stu_out_77: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00022810892551206052
+[2022/12/19 17:53:07] root INFO: stu_out_78: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.439637167612091e-05
+[2022/12/19 17:53:07] root INFO: stu_out_79: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 7.230051414808258e-05
+[2022/12/19 17:53:07] root INFO: stu_out_80: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010005358490161598
+[2022/12/19 17:53:07] root INFO: stu_out_81: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.798636554274708e-05
+[2022/12/19 17:53:07] root INFO: stu_out_82: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010024710354628041
+[2022/12/19 17:53:07] root INFO: stu_out_83: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00011466744035715237
+[2022/12/19 17:53:07] root INFO: stu_out_84: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00015990951214917004
+[2022/12/19 17:53:07] root INFO: stu_out_85: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0002532823709771037
+[2022/12/19 17:53:07] root INFO: stu_out_86: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 8.369173883693293e-05
+[2022/12/19 17:53:07] root INFO: stu_out_87: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.512193795060739e-05
+[2022/12/19 17:53:07] root INFO: stu_out_88: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00017629530339036137
+[2022/12/19 17:53:07] root INFO: stu_out_89: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.269729343941435e-05
+[2022/12/19 17:53:07] root INFO: stu_out_90: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00010954961180686951
+[2022/12/19 17:53:07] root INFO: stu_out_91: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00012277391215320677
+[2022/12/19 17:53:07] root INFO: stu_out_92: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00014633826503995806
+[2022/12/19 17:53:07] root INFO: stu_out_93: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0002471919287927449
+[2022/12/19 17:53:07] root INFO: stu_out_94: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 9.826853784034029e-05
+[2022/12/19 17:53:07] root INFO: stu_out_95: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 6.866025069030002e-05
+[2022/12/19 17:53:07] root INFO: center_epoch_0: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 2.1363912861005474e-09
+[2022/12/19 17:53:07] root INFO: loss_epoch_0: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.9073486328125e-06
+[2022/12/19 17:53:07] root INFO: center_epoch_1: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 1.5884397130960792e-09
+[2022/12/19 17:53:07] root INFO: loss_epoch_1: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 1.430511474609375e-06
+[2022/12/19 17:53:07] root INFO: center_epoch_2: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 3.328013642445171e-09
+[2022/12/19 17:53:07] root INFO: loss_epoch_2: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0002918243408203125
+[2022/12/19 17:53:07] root INFO: center_epoch_3: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 1.3517979624566578e-08
+[2022/12/19 17:53:07] root INFO: loss_epoch_3: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.00047397613525390625
+[2022/12/19 17:53:07] root INFO: center_epoch_4: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 3.843764062594346e-08
+[2022/12/19 17:53:07] root INFO: loss_epoch_4: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0005636215209960938
+[2022/12/19 17:53:07] root INFO: center_epoch_5: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 7.671685864352185e-08
+[2022/12/19 17:53:07] root INFO: loss_epoch_5: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0005974769592285156
+[2022/12/19 17:53:07] root INFO: center_epoch_6: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 1.331143124616574e-07
+[2022/12/19 17:53:07] root INFO: loss_epoch_6: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0005931854248046875
+[2022/12/19 17:53:07] root INFO: center_epoch_7: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 2.0661799737808906e-07
+[2022/12/19 17:53:07] root INFO: loss_epoch_7: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0006008148193359375
+[2022/12/19 17:53:07] root INFO: center_epoch_8: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 2.9896955311414786e-07
+[2022/12/19 17:53:07] root INFO: loss_epoch_8: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0006036758422851562
+[2022/12/19 17:53:07] root INFO: center_epoch_9: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: True, value: 4.1421381524742173e-07
+[2022/12/19 17:53:07] root INFO: loss_epoch_9: 
+[2022/12/19 17:53:07] root INFO: 	mean diff: check passed: False, value: 0.0005941390991210938
+[2022/12/19 17:53:07] root INFO: diff check failed

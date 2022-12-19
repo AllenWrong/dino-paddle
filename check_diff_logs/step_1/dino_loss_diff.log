@@ -1,0 +1,5 @@
+[2022/12/17 14:31:33] root INFO: dino_losses: 
+[2022/12/17 14:31:33] root INFO: 	mean diff: check passed: True, value: 4.654272522941483e-10
+[2022/12/17 14:31:33] root INFO: center: 
+[2022/12/17 14:31:33] root INFO: 	mean diff: check passed: True, value: 1.0425548028401975e-07
+[2022/12/17 14:31:33] root INFO: diff check passed
