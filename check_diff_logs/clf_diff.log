@@ -1,0 +1,62 @@
+[2022/12/17 14:14:28] root INFO: output_epoch_0: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 3.457136472206912e-06
+[2022/12/17 14:14:28] root INFO: pred_epoch_0: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 6.318092346191406e-06
+[2022/12/17 14:14:28] root INFO: loss_epoch_0: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 3.814697265625e-06
+[2022/12/17 14:14:28] root INFO: grad_0_epoch_0: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 1.2295872764411797e-08
+[2022/12/17 14:14:28] root INFO: grad_1_epoch_0: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 1.7879538960485775e-09
+[2022/12/17 14:14:28] root INFO: output_epoch_1: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 4.040386556880549e-06
+[2022/12/17 14:14:28] root INFO: pred_epoch_1: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 3.24249267578125e-05
+[2022/12/17 14:14:28] root INFO: loss_epoch_1: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: grad_0_epoch_1: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 2.797856809962777e-29
+[2022/12/17 14:14:28] root INFO: grad_1_epoch_1: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 8.734267587513709e-30
+[2022/12/17 14:14:28] root INFO: output_epoch_2: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 4.73474528916995e-06
+[2022/12/17 14:14:28] root INFO: pred_epoch_2: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 8.392333984375e-05
+[2022/12/17 14:14:28] root INFO: loss_epoch_2: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: grad_0_epoch_2: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: grad_1_epoch_2: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: output_epoch_3: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 5.315879207046237e-06
+[2022/12/17 14:14:28] root INFO: pred_epoch_3: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 8.7738037109375e-05
+[2022/12/17 14:14:28] root INFO: loss_epoch_3: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: grad_0_epoch_3: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: grad_1_epoch_3: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: output_epoch_4: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 5.785253051726613e-06
+[2022/12/17 14:14:28] root INFO: pred_epoch_4: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: False, value: 9.5367431640625e-05
+[2022/12/17 14:14:28] root INFO: loss_epoch_4: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: grad_0_epoch_4: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: grad_1_epoch_4: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: diff check failed
+[2022/12/17 14:14:28] root INFO: lr_epoch_0: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: lr_epoch_1: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: lr_epoch_2: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: lr_epoch_3: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: lr_epoch_4: 
+[2022/12/17 14:14:28] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:14:28] root INFO: diff check passed

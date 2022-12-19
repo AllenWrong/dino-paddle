@@ -1,0 +1,7 @@
+[2022/12/15 23:53:57] root INFO: lr: 
+[2022/12/15 23:53:57] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/15 23:53:57] root INFO: wd: 
+[2022/12/15 23:53:57] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/15 23:53:57] root INFO: momentum_schedule: 
+[2022/12/15 23:53:57] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/15 23:53:57] root INFO: diff check passed

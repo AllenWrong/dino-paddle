@@ -1,0 +1,51 @@
+[2022/12/17 13:58:21] root INFO: module_0: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 13:58:21] root INFO: module_1: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 7.797128631636951e-08
+[2022/12/17 13:58:21] root INFO: module_2: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 1.846445911724004e-07
+[2022/12/17 13:58:21] root INFO: module_3: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 3.6716210161102936e-07
+[2022/12/17 13:58:21] root INFO: output_epoch_0: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: False, value: 4.309581981942756e-06
+[2022/12/17 13:58:21] root INFO: module_4: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 13:58:21] root INFO: module_5: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 7.797128631636951e-08
+[2022/12/17 13:58:21] root INFO: module_6: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 1.846445911724004e-07
+[2022/12/17 13:58:21] root INFO: module_7: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 3.6716210161102936e-07
+[2022/12/17 13:58:21] root INFO: output_epoch_1: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: False, value: 4.309581981942756e-06
+[2022/12/17 13:58:21] root INFO: module_8: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 13:58:21] root INFO: module_9: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 7.797128631636951e-08
+[2022/12/17 13:58:21] root INFO: module_10: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 1.846445911724004e-07
+[2022/12/17 13:58:21] root INFO: module_11: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 3.6716210161102936e-07
+[2022/12/17 13:58:21] root INFO: output_epoch_2: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: False, value: 4.309581981942756e-06
+[2022/12/17 13:58:21] root INFO: module_12: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 13:58:21] root INFO: module_13: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 7.797128631636951e-08
+[2022/12/17 13:58:21] root INFO: module_14: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 1.846445911724004e-07
+[2022/12/17 13:58:21] root INFO: module_15: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 3.6716210161102936e-07
+[2022/12/17 13:58:21] root INFO: output_epoch_3: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: False, value: 4.309581981942756e-06
+[2022/12/17 13:58:21] root INFO: module_16: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 13:58:21] root INFO: module_17: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 7.797128631636951e-08
+[2022/12/17 13:58:21] root INFO: module_18: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 1.846445911724004e-07
+[2022/12/17 13:58:21] root INFO: module_19: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: True, value: 3.6716210161102936e-07
+[2022/12/17 13:58:21] root INFO: output_epoch_4: 
+[2022/12/17 13:58:21] root INFO: 	mean diff: check passed: False, value: 4.309581981942756e-06
+[2022/12/17 13:58:21] root INFO: diff check failed

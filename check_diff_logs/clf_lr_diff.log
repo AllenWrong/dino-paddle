@@ -1,0 +1,11 @@
+[2022/12/17 14:06:33] root INFO: lr_epoch_0: 
+[2022/12/17 14:06:33] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:06:33] root INFO: lr_epoch_1: 
+[2022/12/17 14:06:33] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:06:33] root INFO: lr_epoch_2: 
+[2022/12/17 14:06:33] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:06:33] root INFO: lr_epoch_3: 
+[2022/12/17 14:06:33] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:06:33] root INFO: lr_epoch_4: 
+[2022/12/17 14:06:33] root INFO: 	mean diff: check passed: True, value: 0.0
+[2022/12/17 14:06:33] root INFO: diff check passed
