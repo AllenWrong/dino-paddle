@@ -10,7 +10,7 @@
   "weight_decay": 0.04,
   "weight_decay_end": 0.4,
   "clip_grad": 0,
-  "batch_size_per_gpu": 8,
+  "batch_size": 8,
   "epochs": 100,
   "freeze_last_layer": 1,
   "lr": 0.0005,
