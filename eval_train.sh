@@ -1,0 +1,1 @@
+python eval_linear.py --patch_size 16 --data_path /home/aistudio/data/data93561/ILSVRC2012_val/ --pretrained_weights /home/aistudio/work/dino_deitsmall16_pretrain_full_checkpoint.pdparams --checkpoint_key teacher --pretrained_linear /home/aistudio/work/dino_deitsmall16_linearweights.pdparams --batch_size 512

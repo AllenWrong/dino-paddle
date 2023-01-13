@@ -1,5 +1,4 @@
 import argparse
-import json
 
 import paddle
 from paddle import nn
@@ -10,6 +9,8 @@ from models import LinearClassifier
 from paddle.vision import transforms
 import os
 from utils import MetricLogger
+from dataset import ImageNet2012Dataset
+import json
 from paddle.vision import DatasetFolder
 
 
@@ -38,9 +39,10 @@ def eval_linear(args):
         transforms.ToTensor(),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
+    
+    # dataset_val = DatasetFolder(args.data_path, extensions=["JPEG"], transform=val_transform)
 
-    # dataset_val = ImageNet2012Dataset(args.data_path, mode="val", transform=val_transform)
-    dataset_val = DatasetFolder(args.data_path, transform=val_transform)
+    dataset_val = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode='test', transform=val_transform)
     val_loader = paddle.io.DataLoader(
         dataset_val,
         batch_size=args.batch_size,
@@ -60,7 +62,9 @@ def eval_linear(args):
         transforms.ToTensor(),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
-    dataset_train = DatasetFolder(args.data_path, transform=train_transform)
+    # dataset_train = DatasetFolder(args.data_path, transform=train_transform)
+    dataset_train = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode='test', transform=train_transform)
+    # dataset_train = DatasetFolder(os.path.join(args.data_path, "train"), transform=train_transform)
     sampler = paddle.io.DistributedBatchSampler(dataset_train, args.batch_size)
     train_loader = paddle.io.DataLoader(
         dataset_train,
@@ -81,13 +85,13 @@ def eval_linear(args):
 
     # optionally resume from a checkpoint
     to_restore = {"epoch": 0, "best_acc": 0.}
-    utils.restart_from_checkpoint(
-        os.path.join(args.output_dir, "checkpoint.pth.tar"),
-        run_variables=to_restore,
-        state_dict=linear_clf,
-        optimizer=optimizer,
-        scheduler=scheduler,
-    )
+    # utils.restart_from_checkpoint(
+    #     os.path.join(args.output_dir, "checkpoint.pth.tar"),
+    #     run_variables=to_restore,
+    #     state_dict=linear_clf,
+    #     optimizer=optimizer,
+    #     scheduler=scheduler,
+    # )
     start_epoch = to_restore["epoch"]
     best_acc = to_restore["best_acc"]
 
@@ -101,14 +105,14 @@ def eval_linear(args):
 
         if epoch % args.val_freq == 0 or epoch == args.epochs - 1:
             test_stats = valid(val_loader, model, linear_clf, args.n_last_blocks, args.avgpool_patchtokens)
-            print(f"Accuracy at epoch {epoch} of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
             best_acc = max(best_acc, test_stats["acc1"])
             print(f'Max accuracy so far: {best_acc:.2f}%')
             log_stats = {**{k: v for k, v in log_stats.items()},
                          **{f'test_{k}': v for k, v in test_stats.items()}}
 
+            print(log_stats)
             if dist.get_rank() == 0:
-                with open("valid_log.txt", "a") as f:
+                with open("train_linear_log.txt", "a") as f:
                     f.write(json.dumps(log_stats) + "\n")
 
                 save_dict = {
@@ -128,9 +132,9 @@ def eval_linear(args):
 @paddle.no_grad()
 def valid(valid_loader, model, linear_clf, n_last_blocks, avgpool_patchtokens):
     linear_clf.eval()
-    metrics_logger = MetricLogger(" ")
     acc1_f = paddle.metric.Accuracy(topk=(1,))
     acc5_f = paddle.metric.Accuracy(topk=(5,))
+    metrics_logger = MetricLogger(" ")
     for images, y in valid_loader:
 
         # forward
@@ -146,23 +150,30 @@ def valid(valid_loader, model, linear_clf, n_last_blocks, avgpool_patchtokens):
 
         output = linear_clf(output)
         loss = nn.CrossEntropyLoss()(output, y)
-
+        
         metrics_logger.update(loss=loss.item())
-        acc1 = acc1_f.compute(pred=output, label=y)
-        acc5 = acc5_f.compute(pred=output, label=y)
-        acc1_f.update(acc1)
-        acc5_f.update(acc5)
 
-    acc1 = acc1_f.accumulate()
-    acc5 = acc5_f.accumulate()
+        if args.num_labels >= 5:
+            acc1, acc5 = utils.accuracy(output, y, topk=(1, 5))
+        else:
+            acc1, = utils.accuracy(output, y, topk=(1,))
 
-    log_info = f"Acc @1 {acc1:.4f}, " \
-               f"Acc @5 {acc5:.4f}, " \
-               f"loss {metrics_logger.loss.global_avg:.4f}"
-    print(log_info)
+        # acc1 = acc1_f.compute(pred=output, label=y)
+        # acc5 = acc5_f.compute(pred=output, label=y)
+        # acc1_f.update(acc1)
+        # acc5_f.update(acc5)
+        batch_size = images.shape[0]
+        metrics_logger.meters['acc1'].update(acc1.item(), n=batch_size)
+        if args.num_labels >= 5:
+            metrics_logger.meters['acc5'].update(acc5.item(), n=batch_size)
+
+    # acc1 = acc1_f.accumulate()
+    # acc5 = acc5_f.accumulate()
+    
     return {
-        "acc1": acc1,
-        "acc5": acc5,
+        "loss": metrics_logger.loss.global_avg,
+        "acc1": metrics_logger.acc1.global_avg,
+        "acc5": metrics_logger.acc5.global_avg,
     }
 
 
@@ -212,25 +223,22 @@ if __name__ == '__main__':
         We typically set this to False for ViT-Small and to True with ViT-Base.""")
     parser.add_argument('--arch', default='vit_small', type=str, help='Architecture')
     parser.add_argument('--patch_size', default=16, type=int, help='Patch resolution of the model.')
-    parser.add_argument('--pretrained_weights', default='../weights/dino_deitsmall16_pretrain_full_checkpoint.pdparams',
+    parser.add_argument('--pretrained_weights', default='./dino_deitsmall16_pretrain_full_ckp.pdparams',
                         type=str, help="Path to pretrained weights to evaluate.")
-    parser.add_argument('--pretrained_linear', default='../weights/dino_deitsmall16_linearweights.pdparams',
-                        type=str, help='Path to pretrained linear clf weights.')
+    parser.add_argument('--pretrained_linear', default='', type=str, help='Path to pretrained linear clf weights.')
     parser.add_argument("--checkpoint_key", default="teacher", type=str, help='Key to use in the checkpoint (example: "teacher")')
     parser.add_argument('--epochs', default=100, type=int, help='Number of epochs of training.')
     parser.add_argument("--lr", default=0.001, type=float, help="""Learning rate at the beginning of
         training (highest LR used during training). The learning rate is linearly scaled
         with the batch size, and specified here for a reference batch size of 256.
         We recommend tweaking the LR depending on the checkpoint evaluated.""")
-    parser.add_argument('--batch_size', default=128, type=int, help='Per-GPU batch-size')
-    parser.add_argument("--dist_url", default="env://", type=str, help="""url used to set up
-        distributed training; see https://pytorch.org/docs/stable/distributed.html""")
+    parser.add_argument('--batch_size', default=16, type=int, help='total batch-size')
     parser.add_argument("--local_rank", default=0, type=int, help="Please ignore and do not set this argument.")
     parser.add_argument('--data_path', default='../data/small', type=str)
     parser.add_argument('--num_workers', default=10, type=int, help='Number of data loading workers per GPU.')
     parser.add_argument('--val_freq', default=1, type=int, help="Epoch frequency for validation.")
     parser.add_argument('--output_dir', default=".", help='Path to save logs and checkpoints')
-    parser.add_argument('--num_labels', default=1000, type=int, help='Number of labels for linear classifier')
+    parser.add_argument('--num_labels', default=10, type=int, help='Number of labels for linear classifier')
     parser.add_argument('--evaluate', dest='evaluate', action='store_true', help='evaluate model on validation set')
     args = parser.parse_args()
     eval_linear(args)

@@ -69,6 +69,7 @@ class LinearClassifier(nn.Layer):
         # linear layer
         return self.linear(x)
 
+
 class DINOHead(nn.Layer):
     def __init__(self, in_dim, out_dim, use_bn=False, norm_last_layer=True, nlayers=3, hidden_dim=2048,
                  bottleneck_dim=256):

@@ -95,7 +95,19 @@ def cancel_gradients_last_layer(epoch, model, freeze_last_layer):
         return
     for n, p in model.named_parameters():
         if "last_layer" in n:
-            p.stop_gradient = True
+            # can not use `stop_gradient`
+            p.clear_grad()
+            # p.grad = None
+
+
+def accuracy(output, target, topk=(1,)):
+    """Computes the accuracy over the k top predictions for the specified values of k"""
+    maxk = max(topk)
+    batch_size = target.shape[0]
+    _, pred = output.topk(maxk, 1, True, True)
+    pred = pred.t()
+    correct = pred.equal(target.reshape((1, -1)).expand_as(pred))
+    return [correct[:k].reshape((-1, )).astype("float32").sum(0) * 100. / batch_size for k in topk]
 
 
 class SmoothedValue(object):

@@ -114,7 +114,7 @@ class Attention(nn.Layer):
 
         self.attn_dropout = nn.Dropout(attn_drop)
         self.proj_dropout = nn.Dropout(proj_drop)
-        self.softmax = nn.Softmax(axis=-1)
+        # self.softmax = nn.Softmax(axis=-1)
 
     def _init_weights(self):
         weight_attr = paddle.ParamAttr(initializer=nn.initializer.KaimingUniform())
@@ -136,7 +136,8 @@ class Attention(nn.Layer):
         q, k, v = map(self.transpose_multihead, qkv)  # [N, head, ~, head_size]
 
         attn = paddle.matmul(q, k, transpose_y=True)  # [N, head, ~, ~]
-        attn = self.softmax(attn * self.scales)  # softmax(Q*K/(dk^0.5))
+        attn = attn * self.scales  # softmax(Q*K/(dk^0.5))
+        attn = nn.functional.softmax(attn, axis=-1)
         attn = self.attn_dropout(attn)  # [N, head, ~, ~]
 
         z = paddle.matmul(attn, v)  # [N, head, ~, head_size]

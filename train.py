@@ -6,7 +6,6 @@ import utils
 
 import paddle.optimizer
 import paddle.distributed as dist
-from paddle.distributed import fleet
 from transforms import DataAugmentationDINO
 from paddle.vision.datasets import ImageFolder
 from vision_transformer import vit_small
@@ -38,7 +37,7 @@ def get_args_parser():
     parser.add_argument('--out_dim', default=65536, type=int, help="""Dimensionality of
         the DINO head output. For complex and large datasets large values (like 65k) work well.""")
 
-    parser.add_argument('--norm_last_layer', default=True, type=bool,
+    parser.add_argument('--norm_last_layer', default=False, type=bool,
         help="""Whether or not to weight normalize the last layer of the DINO head.
         Not normalizing leads to better performance but can make the training unstable.
         In our experiments, we typically set this paramater to False with vit_small and True with vit_base.""")
@@ -52,14 +51,14 @@ def get_args_parser():
     parser.add_argument('--warmup_teacher_temp', default=0.04, type=float,
         help="""Initial value for the teacher temperature: 0.04 works well in most cases.
         Try decreasing it if the training loss does not decrease.""")
-    parser.add_argument('--teacher_temp', default=0.04, type=float, help="""Final value (after linear warmup)
+    parser.add_argument('--teacher_temp', default=0.07, type=float, help="""Final value (after linear warmup)
         of the teacher temperature. For most experiments, anything above 0.07 is unstable. We recommend
         starting with the default value of 0.04 and increase this slightly if needed.""")
-    parser.add_argument('--warmup_teacher_temp_epochs', default=0, type=int,
+    parser.add_argument('--warmup_teacher_temp_epochs', default=30, type=int,
         help='Number of warmup epochs for the teacher temperature (Default: 30).')
 
     # Training/Optimization parameters
-    parser.add_argument('--use_fp16', type=bool, default=True, help="""Whether or not
+    parser.add_argument('--use_fp16', type=bool, default=False, help="""Whether or not
         to use half precision for training. Improves training time and memory requirements,
         but can provoke instability and slight decay of performance. We recommend disabling
         mixed precision if the loss is unstable, if reducing the patch size or if training with bigger ViTs.""")
@@ -68,11 +67,10 @@ def get_args_parser():
     parser.add_argument('--weight_decay_end', type=float, default=0.4, help="""Final value of the
         weight decay. We use a cosine schedule for WD and using a larger decay by
         the end of training improves performance for ViTs.""")
-    parser.add_argument('--clip_grad', type=float, default=3.0, help="""Maximal parameter
+    parser.add_argument('--clip_grad', type=float, default=0, help="""Maximal parameter
         gradient norm if using gradient clipping. Clipping with norm .3 ~ 1.0 can
         help optimization for larger ViT architectures. 0 for disabling.""")
-    parser.add_argument('--batch_size_per_gpu', default=64, type=int,
-        help='Per-GPU batch-size : number of distinct images loaded on one GPU.')
+    parser.add_argument('--batch_size', default=16, type=int, help='Bath size.')
     parser.add_argument('--epochs', default=100, type=int, help='Number of epochs of training.')
     parser.add_argument('--freeze_last_layer', default=1, type=int, help="""Number of epochs
         during which we keep the output layer fixed. Typically doing so during
@@ -83,42 +81,41 @@ def get_args_parser():
     parser.add_argument("--warmup_epochs", default=10, type=int,
         help="Number of epochs for the linear learning-rate warm up.")
     parser.add_argument('--base_lr', type=float, default=0.00075, help="Base value of learning rate.")
-    parser.add_argument('--min_lr', type=float, default=1e-6, help="""Target LR at the
+    parser.add_argument('--min_lr', type=float, default=1e-5, help="""Target LR at the
         end of optimization. We use a cosine LR schedule with linear warmup.""")
     parser.add_argument('--optimizer', default='adamw', type=str,
         choices=['adamw', 'sgd', 'lars'], help="""Type of optimizer. We recommend using adamw with ViTs.""")
     parser.add_argument('--drop_path_rate', type=float, default=0.1, help="stochastic depth rate")
 
     # Multi-crop parameters
-    parser.add_argument('--global_crops_scale', type=float, nargs='+', default=(0.4, 1.),
+    parser.add_argument('--global_crops_scale', type=float, nargs='+', default=(0.25, 1.0),
         help="""Scale range of the cropped image before resizing, relatively to the origin image.
         Used for large global view cropping. When disabling multi-crop (--local_crops_number 0), we
         recommand using a wider range of scale ("--global_crops_scale 0.14 1." for example)""")
-    parser.add_argument('--local_crops_number', type=int, default=8, help="""Number of small
+    parser.add_argument('--local_crops_number', type=int, default=10, help="""Number of small
         local views to generate. Set this parameter to 0 to disable multi-crop training.
         When disabling multi-crop we recommend to use "--global_crops_scale 0.14 1." """)
-    parser.add_argument('--local_crops_scale', type=float, nargs='+', default=(0.05, 0.4),
+    parser.add_argument('--local_crops_scale', type=float, nargs='+', default=(0.05, 0.25),
         help="""Scale range of the cropped image before resizing, relatively to the origin image.
         Used for small local view cropping of multi-crop.""")
 
     # Misc
-    parser.add_argument('--resume', default=True, type=bool,
+    parser.add_argument('--resume', default=False, type=bool,
                         help='If resume from checkpoint.')
-    parser.add_argument('--data_path', default='../data/small', type=str,
+    parser.add_argument('--data_path', default='../data/small/', type=str,
         help='Please specify path to the ImageNet training data.')
-    parser.add_argument('--output_dir', default=".", type=str, help='Path to save logs and checkpoints.')
+    parser.add_argument('--output_dir', default="./", type=str,
+                        help='Path to save logs and checkpoints.')
     parser.add_argument('--saveckp_freq', default=20, type=int, help='Save checkpoint every x epochs.')
     parser.add_argument('--seed', default=0, type=int, help='Random seed.')
     parser.add_argument('--num_workers', default=10, type=int, help='Number of data loading workers per GPU.')
-    parser.add_argument("--dist_url", default="env://", type=str, help="""url used to set up
-        distributed training; see https://pytorch.org/docs/stable/distributed.html""")
     parser.add_argument("--local_rank", default=0, type=int, help="Please ignore and do not set this argument.")
     return parser.parse_args()
 
 
 def train_dino(args):
     # ============ distributed env prepare ============
-    dist.init_parallel_env()
+    # dist.init_parallel_env()
 
     utils.fix_random_seeds(args.seed)
 
@@ -128,7 +125,8 @@ def train_dino(args):
         args.local_crops_scale,
         args.local_crops_number,
     )
-    data_set = ImageFolder(args.data_path, transform=transform)
+    # data_set = ImageFolder(args.data_path, transform=transform, extensions=['JPEG'])
+    data_set = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode="test", transform=transform)
     sampler = paddle.io.DistributedBatchSampler(
         data_set, args.batch_size, shuffle=True, drop_last=True
     )
@@ -206,7 +204,6 @@ def train_dino(args):
     if args.resume:
         utils.restart_from_checkpoint(
             "../weights/dino_deitsmall16_pretrain_full_checkpoint.pdparams",
-            # os.path.join(args.output_dir, "full_checkpoint.pth"),
             run_variables=to_restore,
             student=student,
             teacher=teacher,
@@ -237,14 +234,15 @@ def train_dino(args):
         }
         if epoch == args.epochs or epoch % args.saveckp_freq == 0:
             if dist.get_rank() == 0:
-                path = os.path.join(args.output_dir, 'full_checkpoint.pth')
+                path = os.path.join(args.output_dir, 'dino_deitsmall16_pretrain_full_ckp.pdparams')
                 paddle.save(save_dict, path)
 
         # ============ write train log ============
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      'epoch': epoch}
+        print(log_stats)
         if dist.get_rank() == 0:
-            log_path = os.path.join(args.output_dir, "log.txt")
+            log_path = os.path.join(args.output_dir, "train_backbone_log_pd.txt")
             with open(log_path, "a") as f:
                 f.write(json.dumps(log_stats) + "\n")
 
@@ -292,19 +290,16 @@ def train_one_epoch(
                 new_val = m * params_tea.numpy() + (1 - m) * param_stu.detach().numpy()
                 params_tea.set_value(new_val)
 
-        paddle.device.cuda.synchronize()
+        # paddle.device.cuda.synchronize()
         metric_logger.update(loss=loss.item())
         metric_logger.update(lr=optimizer._learning_rate)
         metric_logger.update(wd=optimizer._param_groups[0]["weight_decay"])
 
     # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
-    print("Averaged stats:", metric_logger)
+    # metric_logger.synchronize_between_processes()
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
 if __name__ == "__main__":
     args = get_args_parser()
-    if args.load_args:
-        get_args_from("./args.json", args)
     train_dino(args)
