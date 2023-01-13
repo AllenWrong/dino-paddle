@@ -11,7 +11,6 @@ from paddle.vision import transforms
 import os
 from utils import MetricLogger
 from paddle.vision import DatasetFolder
-from dataset import ImageNet2012Dataset
 
 
 def eval_linear(args):
@@ -40,8 +39,8 @@ def eval_linear(args):
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
 
-    dataset_val = ImageNet2012Dataset(args.data_path, mode="val", transform=val_transform)
-    # dataset_val = DatasetFolder(args.data_path, transform=val_transform)
+    # dataset_val = ImageNet2012Dataset(args.data_path, mode="val", transform=val_transform)
+    dataset_val = DatasetFolder(args.data_path, transform=val_transform)
     val_loader = paddle.io.DataLoader(
         dataset_val,
         batch_size=args.batch_size,
@@ -61,9 +60,7 @@ def eval_linear(args):
         transforms.ToTensor(),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
-    
-    dataset_train = ImageNet2012Dataset(os.path.join(args.data_path, "train"), mode="train", transform=train_transform)
-    # dataset_train = DatasetFolder(args.data_path, transform=train_transform)
+    dataset_train = DatasetFolder(args.data_path, transform=train_transform)
     sampler = paddle.io.DistributedBatchSampler(dataset_train, args.batch_size)
     train_loader = paddle.io.DataLoader(
         dataset_train,
@@ -74,7 +71,6 @@ def eval_linear(args):
 
     # set optimizer
     base_lr = args.lr * (args.batch_size / 256)
-    # base_lr = args.lr
     scheduler = paddle.optimizer.lr.CosineAnnealingDecay(learning_rate=base_lr, T_max=args.epochs, eta_min=0)
     optimizer = paddle.optimizer.Momentum(
         parameters=linear_clf.parameters(),
@@ -86,7 +82,7 @@ def eval_linear(args):
     # optionally resume from a checkpoint
     to_restore = {"epoch": 0, "best_acc": 0.}
     utils.restart_from_checkpoint(
-        os.path.join(args.output_dir, "checkpoint.pth.tar"), # ckp.pdparams
+        os.path.join(args.output_dir, "checkpoint.pth.tar"),
         run_variables=to_restore,
         state_dict=linear_clf,
         optimizer=optimizer,
@@ -96,28 +92,23 @@ def eval_linear(args):
     best_acc = to_restore["best_acc"]
 
     for epoch in range(start_epoch, args.epochs):
-        print("-"*10, f" epoch {epoch} ", "-"*10)
         train_stats = train(model, linear_clf, optimizer, train_loader, epoch,
                             args.n_last_blocks, args.avgpool_patchtokens)
         scheduler.step()
 
-        log_stats = {**{f'train_{k}': v for k, v in train_stats.items()}}
+        log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
+                     'epoch': epoch}
 
         if epoch % args.val_freq == 0 or epoch == args.epochs - 1:
             test_stats = valid(val_loader, model, linear_clf, args.n_last_blocks, args.avgpool_patchtokens)
-            
-            is_best = best_acc < test_stats["acc1"]
+            print(f"Accuracy at epoch {epoch} of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
             best_acc = max(best_acc, test_stats["acc1"])
-            
-            log_stats = {
-                **{k: v for k, v in log_stats.items()},
-                **{f'test_{k}': v for k, v in test_stats.items()},
-                'epoch': epoch
-            }
-            print(log_stats)
+            print(f'Max accuracy so far: {best_acc:.2f}%')
+            log_stats = {**{k: v for k, v in log_stats.items()},
+                         **{f'test_{k}': v for k, v in test_stats.items()}}
 
             if dist.get_rank() == 0:
-                with open(os.path.join(args.output_dir, "train_lin_clf_log.txt"), "a") as f:
+                with open("valid_log.txt", "a") as f:
                     f.write(json.dumps(log_stats) + "\n")
 
                 save_dict = {
@@ -127,11 +118,11 @@ def eval_linear(args):
                     "scheduler": scheduler.state_dict(),
                     "best_acc": best_acc,
                 }
-                if is_best:
-                    paddle.save(save_dict, os.path.join(args.output_dir, "best_ckp.pdparams"))
+
+                paddle.save(save_dict, os.path.join(args.output_dir, "ckp.pdparams"))
 
         print("Training of the supervised linear classifier on frozen features completed.\n"
-              "Top-1 test accuracy: {acc:.4f}".format(acc=best_acc))
+              "Top-1 test accuracy: {acc:.1f}".format(acc=best_acc))
 
 
 @paddle.no_grad()
@@ -165,10 +156,13 @@ def valid(valid_loader, model, linear_clf, n_last_blocks, avgpool_patchtokens):
     acc1 = acc1_f.accumulate()
     acc5 = acc5_f.accumulate()
 
+    log_info = f"Acc @1 {acc1:.4f}, " \
+               f"Acc @5 {acc5:.4f}, " \
+               f"loss {metrics_logger.loss.global_avg:.4f}"
+    print(log_info)
     return {
         "acc1": acc1,
         "acc5": acc5,
-        "loss": metrics_logger.loss.global_avg
     }
 
 
@@ -204,7 +198,8 @@ def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
         metrics_logger.update(lr=optimizer._learning_rate.last_lr)
 
     # gather the stats from all processes
-    metrics_logger.synchronize_between_processes()
+    # metrics_logger.synchronize_between_processes()
+    print("Averaged stats: ", metrics_logger)
     return {k: meter.global_avg for k, meter in metrics_logger.meters.items()}
 
 
@@ -227,7 +222,7 @@ if __name__ == '__main__':
         training (highest LR used during training). The learning rate is linearly scaled
         with the batch size, and specified here for a reference batch size of 256.
         We recommend tweaking the LR depending on the checkpoint evaluated.""")
-    parser.add_argument('--batch_size', default=1024, type=int, help='batch-size on all gpus')
+    parser.add_argument('--batch_size', default=128, type=int, help='Per-GPU batch-size')
     parser.add_argument("--dist_url", default="env://", type=str, help="""url used to set up
         distributed training; see https://pytorch.org/docs/stable/distributed.html""")
     parser.add_argument("--local_rank", default=0, type=int, help="Please ignore and do not set this argument.")
