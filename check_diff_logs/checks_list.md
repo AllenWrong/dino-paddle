@@ -49,3 +49,13 @@
     - 损失：loss差异较小
     - 线性层输出：1e-6（考虑主要是因为LayerNorm带来的误差）
     - 预测结果：1e-5，随着训练的进行，差异在增加
+
+## Cifar10(mode='test')运行日志
+
+`train_backbone_log_pd.txt`：使用paddle训练vit的日志
+
+`train_backbone_log_th.txt`：使用torch训练vit的日志
+
+`train_linear_log_pd.txt`：使用paddle训练linear的日志
+
+`train_linear_log_th.txt`：使用torch训练linear的日志
