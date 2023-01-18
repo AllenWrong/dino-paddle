@@ -25,7 +25,7 @@ Dino paddle implemetion
 - --data_path：训练集路径
 - --pretrained_weights：backbone的预训练模型。默认即可
 - --output_dir：日志、模型的保存目录
-- --batch_size：256，训练分类层、评估模型时都是256
+- --batch_size：32，训练分类层、评估模型时都是32。四卡的话就是4*32=128
 
 ### 评估模型
 
