@@ -186,7 +186,7 @@ def train_dino(args):
 
     # ============ init schedulers ... ============
     lr_schedule = utils.cosine_scheduler(
-        args.lr * args.batch_size / 256,  # linear scaling rule
+        args.lr * args.batch_size * dist.get_world_size() / 256,  # linear scaling rule
         args.min_lr,
         args.epochs, len(data_loader),
         warmup_epochs=args.warmup_epochs,

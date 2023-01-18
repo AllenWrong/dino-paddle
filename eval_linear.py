@@ -74,7 +74,7 @@ def eval_linear(args):
     print(f"Data loaded with {len(dataset_train)} train and {len(dataset_val)} val imgs.")
 
     # set optimizer
-    base_lr = args.lr * (args.batch_size / 256)
+    base_lr = args.lr * (args.batch_size * dist.get_world_size() / 256)
     scheduler = paddle.optimizer.lr.CosineAnnealingDecay(learning_rate=base_lr, T_max=args.epochs, eta_min=0)
     optimizer = paddle.optimizer.Momentum(
         parameters=linear_clf.parameters(),
