@@ -160,7 +160,8 @@ def train_dino(args):
 
     # vit_s8 and vit_s16 are batch norm free models. here, we don't check bn
     teacher = paddle.DataParallel(teacher)
-    teacher_without_ddp = teacher.module
+    teacher_without_ddp = teacher._layers
+    
     student = paddle.DataParallel(student, find_unused_parameters=True)
     # teacher and student start with the same weights
     teacher_without_ddp.load_dict(student.state_dict())
