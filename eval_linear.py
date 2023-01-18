@@ -40,9 +40,8 @@ def eval_linear(args):
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
     
-    # dataset_val = DatasetFolder(args.data_path, extensions=["JPEG"], transform=val_transform)
-
-    dataset_val = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode='test', transform=val_transform)
+    dataset_val = ImageNet2012Dataset(args.data_path, mode="val", transform=val_transform)
+    # dataset_val = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode='test', transform=val_transform)
     val_loader = paddle.io.DataLoader(
         dataset_val,
         batch_size=args.batch_size,
@@ -62,8 +61,9 @@ def eval_linear(args):
         transforms.ToTensor(),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
-    # dataset_train = DatasetFolder(args.data_path, transform=train_transform)
-    dataset_train = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode='test', transform=train_transform)
+
+    dataset_train = ImageNet2012Dataset(args.data_path, mode="train", transform=train_transform)
+    # dataset_train = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode='test', transform=train_transform)
     # dataset_train = DatasetFolder(os.path.join(args.data_path, "train"), transform=train_transform)
     sampler = paddle.io.DistributedBatchSampler(dataset_train, args.batch_size)
     train_loader = paddle.io.DataLoader(
@@ -123,7 +123,7 @@ def eval_linear(args):
                     "best_acc": best_acc,
                 }
 
-                paddle.save(save_dict, os.path.join(args.output_dir, "ckp.pdparams"))
+                paddle.save(save_dict, os.path.join(args.output_dir, "dino_deitsmall16_linearweights.pdparams"))
 
         print("Training of the supervised linear classifier on frozen features completed.\n"
               "Top-1 test accuracy: {acc:.1f}".format(acc=best_acc))
@@ -209,7 +209,7 @@ def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
         metrics_logger.update(lr=optimizer._learning_rate.last_lr)
 
     # gather the stats from all processes
-    # metrics_logger.synchronize_between_processes()
+    metrics_logger.synchronize_between_processes()
     print("Averaged stats: ", metrics_logger)
     return {k: meter.global_avg for k, meter in metrics_logger.meters.items()}
 

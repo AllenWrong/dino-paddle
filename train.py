@@ -115,7 +115,7 @@ def get_args_parser():
 
 def train_dino(args):
     # ============ distributed env prepare ============
-    # dist.init_parallel_env()
+    dist.init_parallel_env()
 
     utils.fix_random_seeds(args.seed)
 
@@ -125,8 +125,8 @@ def train_dino(args):
         args.local_crops_scale,
         args.local_crops_number,
     )
-    # data_set = ImageFolder(args.data_path, transform=transform, extensions=['JPEG'])
-    data_set = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode="test", transform=transform)
+    data_set = ImageFolder(args.data_path, transform=transform)
+    # data_set = paddle.vision.datasets.Cifar10(data_file="../data/cifar-10-python.tar.gz", mode="test", transform=transform)
     sampler = paddle.io.DistributedBatchSampler(
         data_set, args.batch_size, shuffle=True, drop_last=True
     )
@@ -296,7 +296,7 @@ def train_one_epoch(
         metric_logger.update(wd=optimizer._param_groups[0]["weight_decay"])
 
     # gather the stats from all processes
-    # metric_logger.synchronize_between_processes()
+    metric_logger.synchronize_between_processes()
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
