@@ -19,7 +19,7 @@ from lib import get_args_from
 
 def get_args_parser():
     parser = argparse.ArgumentParser('DINO', add_help=False)
-    parser.add_argument('--load_args', type=bool, default=True,
+    parser.add_argument('--load_args', type=str, default="",
                         help="load args from 'args.json'")
 
     # Model parameters
@@ -37,7 +37,7 @@ def get_args_parser():
     parser.add_argument('--out_dim', default=65536, type=int, help="""Dimensionality of
         the DINO head output. For complex and large datasets large values (like 65k) work well.""")
 
-    parser.add_argument('--norm_last_layer', default=False, type=bool,
+    parser.add_argument('--norm_last_layer', default=True, type=bool,
         help="""Whether or not to weight normalize the last layer of the DINO head.
         Not normalizing leads to better performance but can make the training unstable.
         In our experiments, we typically set this paramater to False with vit_small and True with vit_base.""")
@@ -51,14 +51,14 @@ def get_args_parser():
     parser.add_argument('--warmup_teacher_temp', default=0.04, type=float,
         help="""Initial value for the teacher temperature: 0.04 works well in most cases.
         Try decreasing it if the training loss does not decrease.""")
-    parser.add_argument('--teacher_temp', default=0.07, type=float, help="""Final value (after linear warmup)
+    parser.add_argument('--teacher_temp', default=0.04, type=float, help="""Final value (after linear warmup)
         of the teacher temperature. For most experiments, anything above 0.07 is unstable. We recommend
         starting with the default value of 0.04 and increase this slightly if needed.""")
-    parser.add_argument('--warmup_teacher_temp_epochs', default=30, type=int,
+    parser.add_argument('--warmup_teacher_temp_epochs', default=0, type=int,
         help='Number of warmup epochs for the teacher temperature (Default: 30).')
 
     # Training/Optimization parameters
-    parser.add_argument('--use_fp16', type=bool, default=False, help="""Whether or not
+    parser.add_argument('--use_fp16', type=bool, default=True, help="""Whether or not
         to use half precision for training. Improves training time and memory requirements,
         but can provoke instability and slight decay of performance. We recommend disabling
         mixed precision if the loss is unstable, if reducing the patch size or if training with bigger ViTs.""")
@@ -67,10 +67,10 @@ def get_args_parser():
     parser.add_argument('--weight_decay_end', type=float, default=0.4, help="""Final value of the
         weight decay. We use a cosine schedule for WD and using a larger decay by
         the end of training improves performance for ViTs.""")
-    parser.add_argument('--clip_grad', type=float, default=0, help="""Maximal parameter
+    parser.add_argument('--clip_grad', type=float, default=3.0, help="""Maximal parameter
         gradient norm if using gradient clipping. Clipping with norm .3 ~ 1.0 can
         help optimization for larger ViT architectures. 0 for disabling.""")
-    parser.add_argument('--batch_size', default=16, type=int, help='Bath size.')
+    parser.add_argument('--batch_size', default=64, type=int, help='Bath size.')
     parser.add_argument('--epochs', default=100, type=int, help='Number of epochs of training.')
     parser.add_argument('--freeze_last_layer', default=1, type=int, help="""Number of epochs
         during which we keep the output layer fixed. Typically doing so during
@@ -81,26 +81,26 @@ def get_args_parser():
     parser.add_argument("--warmup_epochs", default=10, type=int,
         help="Number of epochs for the linear learning-rate warm up.")
     parser.add_argument('--base_lr', type=float, default=0.00075, help="Base value of learning rate.")
-    parser.add_argument('--min_lr', type=float, default=1e-5, help="""Target LR at the
+    parser.add_argument('--min_lr', type=float, default=1e-6, help="""Target LR at the
         end of optimization. We use a cosine LR schedule with linear warmup.""")
     parser.add_argument('--optimizer', default='adamw', type=str,
         choices=['adamw', 'sgd', 'lars'], help="""Type of optimizer. We recommend using adamw with ViTs.""")
     parser.add_argument('--drop_path_rate', type=float, default=0.1, help="stochastic depth rate")
 
     # Multi-crop parameters
-    parser.add_argument('--global_crops_scale', type=float, nargs='+', default=(0.25, 1.0),
+    parser.add_argument('--global_crops_scale', type=float, nargs='+', default=(0.4, 1.0),
         help="""Scale range of the cropped image before resizing, relatively to the origin image.
         Used for large global view cropping. When disabling multi-crop (--local_crops_number 0), we
         recommand using a wider range of scale ("--global_crops_scale 0.14 1." for example)""")
-    parser.add_argument('--local_crops_number', type=int, default=10, help="""Number of small
+    parser.add_argument('--local_crops_number', type=int, default=8, help="""Number of small
         local views to generate. Set this parameter to 0 to disable multi-crop training.
         When disabling multi-crop we recommend to use "--global_crops_scale 0.14 1." """)
-    parser.add_argument('--local_crops_scale', type=float, nargs='+', default=(0.05, 0.25),
+    parser.add_argument('--local_crops_scale', type=float, nargs='+', default=(0.05, 0.4),
         help="""Scale range of the cropped image before resizing, relatively to the origin image.
         Used for small local view cropping of multi-crop.""")
 
     # Misc
-    parser.add_argument('--resume', default=False, type=bool,
+    parser.add_argument('--resume_path', default="", type=str,
                         help='If resume from checkpoint.')
     parser.add_argument('--data_path', default='../data/small/', type=str,
         help='Please specify path to the ImageNet training data.')
@@ -163,8 +163,10 @@ def train_dino(args):
     teacher_without_ddp = teacher._layers
     
     student = paddle.DataParallel(student, find_unused_parameters=True)
+    
     # teacher and student start with the same weights
     teacher_without_ddp.load_dict(student.state_dict())
+    
     # there is no backpropagation through the teacher, so no need for gradients
     for p in teacher.parameters():
         p.requires_grad = False
@@ -182,7 +184,13 @@ def train_dino(args):
 
     # ============ preparing optimizer ============
     params_groups = utils.get_params_groups(student)
-    opt = paddle.optimizer.AdamW(learning_rate=args.base_lr, parameters=params_groups)
+    clip = paddle.nn.ClipGradByGlobalNorm(args.clear_grad) if args.clip_grad != 0 else None
+
+    opt = paddle.optimizer.AdamW(learning_rate=args.base_lr, parameters=params_groups, grad_clip=clip)
+    fp16_scaler = None
+    if args.use_fp16:
+        # be consistent with pytorch default value.
+        fp16_scaler = paddle.amp.GradScaler(init_loss_scaling=65536.0, incr_every_n_steps=2000)
 
     # ============ init schedulers ... ============
     lr_schedule = utils.cosine_scheduler(
@@ -203,14 +211,14 @@ def train_dino(args):
 
     # ============ optionally resume training ============
     to_restore = {"epoch": 0}
-    if args.resume:
+    if args.resume_path != "":
         utils.restart_from_checkpoint(
-            "../weights/dino_deitsmall16_pretrain_full_checkpoint.pdparams",
+            args.resume_path,
             run_variables=to_restore,
             student=student,
             teacher=teacher,
             optimizer=opt,
-            fp16_scaler=None,
+            fp16_scaler=fp16_scaler,
             dino_loss=dino_loss,
         )
     start_epoch = to_restore["epoch"]
@@ -219,10 +227,11 @@ def train_dino(args):
     # ============ training ============
     print("Starting DINO training!")
     for epoch in range(start_epoch, args.epochs):
+        start_time = time.time()
         train_stats = train_one_epoch(
             student, teacher, teacher_without_ddp, dino_loss,
             data_loader, opt, lr_schedule, wd_schedule, momentum_schedule,
-            epoch, None, args
+            epoch, fp16_scaler, args
         )
 
         # ============ check point save ============
@@ -234,14 +243,21 @@ def train_dino(args):
             'args': args,
             'dino_loss': dino_loss.state_dict(),
         }
+
+        if fp16_scaler is not None:
+            save_dict['fp16_scaler'] = fp16_scaler.state_dict()
+        
         if epoch == args.epochs or epoch % args.saveckp_freq == 0:
             if dist.get_rank() == 0:
                 path = os.path.join(args.output_dir, 'dino_deitsmall16_pretrain_full_ckp.pdparams')
                 paddle.save(save_dict, path)
 
+        end_time = time.time()
+        used_time = f"{(end_time - start_time)/3600:.6f} h"
+
         # ============ write train log ============
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
-                     'epoch': epoch}
+                     'epoch': epoch, 'used_time': used_time}
         print(log_stats)
         if dist.get_rank() == 0:
             log_path = os.path.join(args.output_dir, "train_backbone_log_pd.txt")
@@ -269,10 +285,11 @@ def train_one_epoch(
                 # only the first group is regularized
                 param_group["weight_decay"] = wd_schedule[cur_iter_num]
 
-        # forward and compute dino loss
-        teacher_output = teacher(images[0][:2])  # only the 2 global views pass through the teacher
-        student_output = student(images[0])      # all views pass through the student
-        loss = dino_loss(student_output, teacher_output, epoch)
+        with with paddle.amp.auto_cast(fp16_scaler is not None):
+            # forward and compute dino loss
+            teacher_output = teacher(images[0][:2])  # only the 2 global views pass through the teacher
+            student_output = student(images[0])      # all views pass through the student
+            loss = dino_loss(student_output, teacher_output, epoch)
 
         if not math.isfinite(loss.item()):
             print("Loss is {}, stopping training".format(loss.item()), force=True)
@@ -281,9 +298,15 @@ def train_one_epoch(
         optimizer.clear_grad()
 
         # student update
-        loss.backward()
-        utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
-        optimizer.step()
+        if fp16_scaler is None:
+            loss.backward()
+            utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
+            optimizer.step()
+        else:
+            fp16_scaler.scale(loss).backward()
+            utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
+            fp16_scaler.step(optimizer)
+            fp16_scaler.update()
 
         # EMA update for the teacher
         with paddle.no_grad():
