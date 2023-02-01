@@ -21,8 +21,13 @@ from functools import partial
 import numpy as np
 import paddle
 import paddle.nn as nn
-from paddle.nn.initializer import Constant
 from paddle import ParamAttr
+from paddle.nn.initializer import TruncatedNormal, Constant, Normal
+
+trunc_normal_ = TruncatedNormal(std=.02)
+normal_ = Normal
+zeros_ = Constant(value=0.)
+ones_ = Constant(value=1.)
 
 
 def vit_small(patch_size=16, **kwargs):
@@ -60,29 +65,15 @@ class Mlp(nn.Layer):
         super(Mlp, self).__init__()
         out_features = out_features or in_features
         # fc1
-        w_attr_1, b_attr_1 = self._init_weights()
         self.fc1 = nn.Linear(in_features,
-                             hidden_features,
-                             weight_attr=w_attr_1,
-                             bias_attr=b_attr_1)
+                             hidden_features)
         # fc2
-        w_attr_2, b_attr_2 = self._init_weights()
         self.fc2 = nn.Linear(hidden_features,
-                             out_features,
-                             weight_attr=w_attr_2,
-                             bias_attr=b_attr_2)
+                             out_features)
 
         self.act = act_layer()  # GELU > ELU > ReLU > sigmod
         self.dropout1 = nn.Dropout(drop)
         self.dropout2 = nn.Dropout(drop)
-
-    def _init_weights(self):
-        weight_attr = paddle.ParamAttr(
-            initializer=paddle.nn.initializer.XavierUniform())
-            #XavierNormal正态分布的所有层梯度一致，XavierUniform均匀分布的所有成梯度一致。
-        bias_attr = paddle.ParamAttr(
-            initializer=paddle.nn.initializer.Normal(std=1e-6)) #正态分布的权值和偏置
-        return weight_attr, bias_attr
 
     def forward(self, x):
         x = self.fc1(x)  # [N, ~, embed_dim]
@@ -102,24 +93,16 @@ class Attention(nn.Layer):
         self.scales = qk_scale or self.attn_head_size ** -0.5
 
         # calculate qkv
-        w_attr_1, b_attr_1 = self._init_weights()
         self.qkv = nn.Linear(
             dim, self.all_head_size * 3,  # weight for Q K V
-            weight_attr=w_attr_1,
-            bias_attr=b_attr_1 if qkv_bias else False)
+            bias_attr=qkv_bias)
 
         # calculate proj
-        w_attr_2, b_attr_2 = self._init_weights()
-        self.proj = nn.Linear(dim, dim, weight_attr=w_attr_2, bias_attr=b_attr_2)
+        self.proj = nn.Linear(dim, dim)
 
         self.attn_dropout = nn.Dropout(attn_drop)
         self.proj_dropout = nn.Dropout(proj_drop)
         # self.softmax = nn.Softmax(axis=-1)
-
-    def _init_weights(self):
-        weight_attr = paddle.ParamAttr(initializer=nn.initializer.KaimingUniform())
-        bias_attr = paddle.ParamAttr(initializer=nn.initializer.KaimingUniform())
-        return weight_attr, bias_attr
 
     def transpose_multihead(self, x):
         # input size  [N, ~, embed_dim]
@@ -203,18 +186,17 @@ class VisionTransformer(nn.Layer):
             img_size=img_size[0], patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
         num_patches = self.patch_embed.num_patches
 
-        p_attr = ParamAttr(initializer=Constant(0.0))
         self.cls_token = paddle.create_parameter(
             shape=[1, 1, embed_dim],
             dtype='float32',
-            attr=p_attr,
-            default_initializer=paddle.nn.initializer.TruncatedNormal(std=.02))
+            default_initializer=zeros_)
+        trunc_normal_(self.cls_token)
 
         self.pos_embed = paddle.create_parameter(
             shape=[1, 1 + num_patches, embed_dim],
             dtype='float32',
-            attr=p_attr,
-            default_initializer=paddle.nn.initializer.TruncatedNormal(std=.02))
+            default_initializer=zeros_)
+        trunc_normal_(self.pos_embed)
 
         self.pos_drop = nn.Dropout(p=drop_rate)
 
@@ -233,16 +215,12 @@ class VisionTransformer(nn.Layer):
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
-            m.weight = paddle.create_parameter(
-                shape=m.weight.shape,
-                dtype='float32',
-                default_initializer=paddle.nn.initializer.TruncatedNormal(std=.02)
-            )
+            trunc_normal_(m.weight)
             if isinstance(m, nn.Linear) and m.bias is not None:
-                m.bias.set_value(np.zeros(m.bias.shape, dtype="float32"))
+                zeros_(m.bias)
         elif isinstance(m, nn.LayerNorm):
-            m.bias.set_value(np.zeros(m.bias.shape, dtype="float32"))
-            m.weight.set_value(np.ones(m.weight.shape, dtype="float32"))
+            zeros_(m.bias)
+            ones_(m.weight)
 
     def interpolate_pos_encoding(self, x, w, h):
         npatch = x.shape[1] - 1
