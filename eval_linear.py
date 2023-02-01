@@ -206,12 +206,15 @@ def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
         loss.backward()
         optimizer.step()
 
-        paddle.device.cuda.synchronize()
+        if dist.is_initialized:
+            paddle.device.cuda.synchronize()
+        
         metrics_logger.update(loss=loss.item())
         metrics_logger.update(lr=optimizer._learning_rate.last_lr)
 
     # gather the stats from all processes
-    metrics_logger.synchronize_between_processes()
+    if dist.is_initialized:
+        metrics_logger.synchronize_between_processes()
     print("Averaged stats: ", metrics_logger)
     return {k: meter.global_avg for k, meter in metrics_logger.meters.items()}
 
