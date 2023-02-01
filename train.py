@@ -162,14 +162,14 @@ def train_dino(args):
     teacher = paddle.DataParallel(teacher)
     teacher_without_ddp = teacher._layers
     
-    student = paddle.DataParallel(student, find_unused_parameters=True)
+    student = paddle.DataParallel(student)
     
     # teacher and student start with the same weights
     teacher_without_ddp.load_dict(student.state_dict())
     
     # there is no backpropagation through the teacher, so no need for gradients
     for p in teacher.parameters():
-        p.requires_grad = False
+        p.stop_gradient = True
     print(f"Student and Teacher are built: they are both {args.arch} network.")
 
     # ============ preparing loss ============
@@ -227,7 +227,7 @@ def train_dino(args):
     # ============ training ============
     print("Starting DINO training!")
     for epoch in range(start_epoch, args.epochs):
-        start_time = time.time()
+        epoch_start_time = time.time()
         train_stats = train_one_epoch(
             student, teacher, teacher_without_ddp, dino_loss,
             data_loader, opt, lr_schedule, wd_schedule, momentum_schedule,
@@ -252,8 +252,8 @@ def train_dino(args):
                 path = os.path.join(args.output_dir, 'dino_deitsmall16_pretrain_full_ckp.pdparams')
                 paddle.save(save_dict, path)
 
-        end_time = time.time()
-        used_time = f"{(end_time - start_time)/3600:.6f} h"
+        epoch_end_time = time.time()
+        used_time = f"{(epoch_end_time - epoch_start_time)/3600:.6f} h"
 
         # ============ write train log ============
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
@@ -275,7 +275,8 @@ def train_one_epoch(
         fp16_scaler, args):
 
     metric_logger = utils.MetricLogger(" ")
-    for it, images in enumerate(data_loader):
+    header = 'Epoch: [{}/{}]'.format(epoch, args.epochs)
+    for it, images in enumerate(metric_logger.log_every(data_loader, 10, header)):
         # update weight decay and learning rate
         # compute global training iteration
         cur_iter_num = len(data_loader) * epoch + it
@@ -304,6 +305,8 @@ def train_one_epoch(
             optimizer.step()
         else:
             fp16_scaler.scale(loss).backward()
+            if args.clip_grad != 0:
+                fp16_scaler.unscale_(optimizer)
             utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
             fp16_scaler.step(optimizer)
             fp16_scaler.update()
