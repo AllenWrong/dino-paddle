@@ -5,6 +5,8 @@ from collections import defaultdict, deque
 import paddle
 import numpy as np
 import os
+import time
+import datetime
 
 
 def load_linear_clf_weights(linear_clf, path):
@@ -197,6 +199,60 @@ class MetricLogger(object):
                 "{}: {}".format(name, str(meter))
             )
         return self.delimiter.join(loss_str)
+    
+    def log_every(self, iterable, print_freq, header=None):
+        i = 0
+        if not header:
+            header = ''
+        start_time = time.time()
+        end = time.time()
+        iter_time = SmoothedValue(fmt='{avg:.6f}')
+        data_time = SmoothedValue(fmt='{avg:.6f}')
+        space_fmt = ':' + str(len(str(len(iterable)))) + 'd'
+        if paddle.device.cuda.device_count() != 0:
+            log_msg = self.delimiter.join([
+                header,
+                '[{0' + space_fmt + '}/{1}]',
+                'eta: {eta}',
+                '{meters}',
+                'time: {time}',
+                'data: {data}',
+                'max mem: {memory:.0f}'
+            ])
+        else:
+            log_msg = self.delimiter.join([
+                header,
+                '[{0' + space_fmt + '}/{1}]',
+                'eta: {eta}',
+                '{meters}',
+                'time: {time}',
+                'data: {data}'
+            ])
+        MB = 1024.0 * 1024.0
+        for obj in iterable:
+            data_time.update(time.time() - end)
+            yield obj
+            iter_time.update(time.time() - end)
+            if i % print_freq == 0 or i == len(iterable) - 1:
+                eta_seconds = iter_time.global_avg * (len(iterable) - i)
+                eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
+                if paddle.device.cuda.device_count() != 0:
+                    print(log_msg.format(
+                        i, len(iterable), eta=eta_string,
+                        meters=str(self),
+                        time=str(iter_time), data=str(data_time),
+                        memory=paddle.device.cuda.max_memory_allocated() / MB))
+                else:
+                    print(log_msg.format(
+                        i, len(iterable), eta=eta_string,
+                        meters=str(self),
+                        time=str(iter_time), data=str(data_time)))
+            i += 1
+            end = time.time()
+        total_time = time.time() - start_time
+        total_time_str = str(datetime.timedelta(seconds=int(total_time)))
+        print('{} Total time: {} ({:.6f} s / it)'.format(
+            header, total_time_str, total_time / len(iterable)))
 
     def synchronize_between_processes(self):
         for meter in self.meters.values():
