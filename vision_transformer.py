@@ -186,13 +186,13 @@ class VisionTransformer(nn.Layer):
             img_size=img_size[0], patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
         num_patches = self.patch_embed.num_patches
 
-        self.cls_token = paddle.create_parameter(
+        self.cls_token = self.create_parameter(
             shape=[1, 1, embed_dim],
             dtype='float32',
             default_initializer=zeros_)
         trunc_normal_(self.cls_token)
 
-        self.pos_embed = paddle.create_parameter(
+        self.pos_embed = self.create_parameter(
             shape=[1, 1 + num_patches, embed_dim],
             dtype='float32',
             default_initializer=zeros_)

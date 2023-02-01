@@ -1,6 +1,12 @@
 from paddle import nn
 import paddle
 import numpy as np
+from paddle.nn.initializer import TruncatedNormal, Constant, Normal
+
+trunc_normal_ = TruncatedNormal(std=.02)
+normal_ = Normal(mean=0, std=0.01)
+zeros_ = Constant(value=0.)
+ones_ = Constant(value=1.)
 
 
 class MultiCropWrapper(nn.Layer):
@@ -51,16 +57,8 @@ class LinearClassifier(nn.Layer):
         super(LinearClassifier, self).__init__()
         self.num_labels = num_labels
         self.linear = nn.Linear(dim, num_labels)
-        self.linear.weight = paddle.create_parameter(
-            shape=self.linear.weight.shape,
-            dtype=self.linear.weight.dtype,
-            default_initializer=paddle.nn.initializer.Normal(mean=0, std=0.01)
-        )
-        self.linear.bias = paddle.create_parameter(
-            shape=self.linear.bias.shape,
-            dtype=self.linear.bias.dtype,
-            default_initializer=paddle.nn.initializer.Constant(0.0)
-        )
+        normal_(self.linear.weight)
+        zeros_(self.linear.bias)
 
     def forward(self, x):
         # flatten
@@ -91,21 +89,16 @@ class DINOHead(nn.Layer):
             self.mlp = nn.Sequential(*layers)
         self.apply(self._init_weights)
         self.last_layer = nn.utils.weight_norm(nn.Linear(bottleneck_dim, out_dim, bias_attr=False), dim=1)
-        self.last_layer.weight_g.set_value(
-            np.ones(self.last_layer.weight_g.shape, dtype="float32")
-        )
+        ones_(self.last_layer.weight_g)
+
         if norm_last_layer:
-            self.last_layer.weight_g.requires_grad = False
+            self.last_layer.weight_g.stop_gradient = True
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
-            m.weight = paddle.create_parameter(
-                shape=m.weight.shape,
-                dtype='float32',
-                default_initializer=paddle.nn.initializer.TruncatedNormal(std=.02)
-            )
+            trunc_normal_(m.weight)
             if isinstance(m, nn.Linear) and m.bias is not None:
-                m.bias.set_value(np.zeros(m.bias.shape, dtype="float32"))
+                zeros_(m.bias)
 
     def forward(self, x):
         x = self.mlp(x)

@@ -182,7 +182,9 @@ def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
     metrics_logger = MetricLogger(" ")
     metrics_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
 
-    for image, y in loader:
+    header = 'Epoch: [{}]'.format(epoch)
+    for (image, y) in metric_logger.log_every(loader, 20, header):
+    #for image, y in loader:
 
         # forward
         with paddle.no_grad():
