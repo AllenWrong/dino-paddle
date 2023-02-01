@@ -55,9 +55,9 @@ class DINOLoss(nn.Layer):
         Update center used for teacher output.
         """
         batch_center = paddle.sum(teacher_output, axis=0, keepdim=True)
-        # dist.all_reduce(batch_center)
-        # batch_center = batch_center / (len(teacher_output) * dist.get_world_size())
-        batch_center = batch_center / teacher_output.shape[0]
+        if dist.is_initialized():
+            dist.all_reduce(batch_center)
+        batch_center = batch_center / (len(teacher_output) * dist.get_world_size())
 
         # ema update
         self.center = self.center * self.center_momentum + batch_center * (1 - self.center_momentum)

@@ -184,7 +184,7 @@ def train_dino(args):
 
     # ============ preparing optimizer ============
     params_groups = utils.get_params_groups(student)
-    clip = paddle.nn.ClipGradByGlobalNorm(args.clear_grad) if args.clip_grad != 0 else None
+    clip = paddle.nn.ClipGradByGlobalNorm(args.clip_grad) if args.clip_grad != 0 else None
 
     opt = paddle.optimizer.AdamW(learning_rate=args.base_lr, parameters=params_groups, grad_clip=clip)
     fp16_scaler = None
@@ -285,7 +285,7 @@ def train_one_epoch(
                 # only the first group is regularized
                 param_group["weight_decay"] = wd_schedule[cur_iter_num]
 
-        with with paddle.amp.auto_cast(fp16_scaler is not None):
+        with paddle.amp.auto_cast(fp16_scaler is not None):
             # forward and compute dino loss
             teacher_output = teacher(images[0][:2])  # only the 2 global views pass through the teacher
             student_output = student(images[0])      # all views pass through the student
