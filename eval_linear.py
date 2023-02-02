@@ -164,7 +164,7 @@ def valid(valid_loader, model, linear_clf, n_last_blocks, avgpool_patchtokens):
         if args.num_labels >= 5:
             metrics_logger.meters['acc5'].update(acc5.item(), n=batch_size)
     
-    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+    return {k: meter.global_avg for k, meter in metrics_logger.meters.items()}
 
 
 def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
@@ -173,7 +173,7 @@ def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
     metrics_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
 
     header = 'Epoch: [{}]'.format(epoch)
-    for (image, y) in metric_logger.log_every(loader, 20, header):
+    for (image, y) in metrics_logger.log_every(loader, 20, header):
 
         # forward
         with paddle.no_grad():
