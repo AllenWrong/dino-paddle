@@ -127,7 +127,7 @@ def eval_linear(args):
             paddle.save(save_dict, os.path.join(args.output_dir, "dino_deitsmall16_linearweights.pdparams"))
 
         print("Training of the supervised linear classifier on frozen features completed.\n"
-              "Top-1 test accuracy: {acc:.1f}".format(acc=best_acc))
+              "Top-1 test accuracy: {acc:.4f}".format(acc=best_acc))
 
 
 @paddle.no_grad()
