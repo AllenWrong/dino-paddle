@@ -111,19 +111,20 @@ def eval_linear(args):
                          **{f'test_{k}': v for k, v in test_stats.items()}}
 
             print(log_stats)
-            if dist.get_rank() == 0:
-                with open("train_linear_log.txt", "a") as f:
-                    f.write(json.dumps(log_stats) + "\n")
 
-                save_dict = {
-                    "epoch": epoch + 1,
-                    "state_dict": linear_clf.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "scheduler": scheduler.state_dict(),
-                    "best_acc": best_acc,
-                }
+        if dist.get_rank() == 0:
+            with open("train_linear_log.txt", "a") as f:
+                f.write(json.dumps(log_stats) + "\n")
 
-                paddle.save(save_dict, os.path.join(args.output_dir, "dino_deitsmall16_linearweights.pdparams"))
+            save_dict = {
+                "epoch": epoch + 1,
+                "state_dict": linear_clf.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "scheduler": scheduler.state_dict(),
+                "best_acc": best_acc,
+            }
+
+            paddle.save(save_dict, os.path.join(args.output_dir, "dino_deitsmall16_linearweights.pdparams"))
 
         print("Training of the supervised linear classifier on frozen features completed.\n"
               "Top-1 test accuracy: {acc:.1f}".format(acc=best_acc))
@@ -135,7 +136,8 @@ def valid(valid_loader, model, linear_clf, n_last_blocks, avgpool_patchtokens):
     acc1_f = paddle.metric.Accuracy(topk=(1,))
     acc5_f = paddle.metric.Accuracy(topk=(5,))
     metrics_logger = MetricLogger(" ")
-    for images, y in valid_loader:
+    header = 'Test:'
+    for images, y in metrics_logger.log_every(valid_loader, 20, header):
 
         # forward
         with paddle.no_grad():
@@ -150,31 +152,19 @@ def valid(valid_loader, model, linear_clf, n_last_blocks, avgpool_patchtokens):
 
         output = linear_clf(output)
         loss = nn.CrossEntropyLoss()(output, y)
-        
-        metrics_logger.update(loss=loss.item())
 
         if args.num_labels >= 5:
             acc1, acc5 = utils.accuracy(output, y, topk=(1, 5))
         else:
             acc1, = utils.accuracy(output, y, topk=(1,))
 
-        # acc1 = acc1_f.compute(pred=output, label=y)
-        # acc5 = acc5_f.compute(pred=output, label=y)
-        # acc1_f.update(acc1)
-        # acc5_f.update(acc5)
         batch_size = images.shape[0]
+        metrics_logger.update(loss=loss.item())
         metrics_logger.meters['acc1'].update(acc1.item(), n=batch_size)
         if args.num_labels >= 5:
             metrics_logger.meters['acc5'].update(acc5.item(), n=batch_size)
-
-    # acc1 = acc1_f.accumulate()
-    # acc5 = acc5_f.accumulate()
     
-    return {
-        "loss": metrics_logger.loss.global_avg,
-        "acc1": metrics_logger.acc1.global_avg,
-        "acc5": metrics_logger.acc5.global_avg,
-    }
+    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
 def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
@@ -184,7 +174,6 @@ def train(model, linear_clf, optimizer, loader, epoch, n, avgpool):
 
     header = 'Epoch: [{}]'.format(epoch)
     for (image, y) in metric_logger.log_every(loader, 20, header):
-    #for image, y in loader:
 
         # forward
         with paddle.no_grad():
@@ -238,7 +227,6 @@ if __name__ == '__main__':
         with the batch size, and specified here for a reference batch size of 256.
         We recommend tweaking the LR depending on the checkpoint evaluated.""")
     parser.add_argument('--batch_size', default=16, type=int, help='total batch-size')
-    parser.add_argument("--local_rank", default=0, type=int, help="Please ignore and do not set this argument.")
     parser.add_argument('--data_path', default='../data/small', type=str)
     parser.add_argument('--num_workers', default=10, type=int, help='Number of data loading workers per GPU.')
     parser.add_argument('--val_freq', default=1, type=int, help="Epoch frequency for validation.")
