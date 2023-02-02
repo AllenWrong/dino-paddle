@@ -222,11 +222,11 @@ if __name__ == '__main__':
     parser.add_argument('--pretrained_linear', default='', type=str, help='Path to pretrained linear clf weights.')
     parser.add_argument("--checkpoint_key", default="teacher", type=str, help='Key to use in the checkpoint (example: "teacher")')
     parser.add_argument('--epochs', default=100, type=int, help='Number of epochs of training.')
-    parser.add_argument("--lr", default=0.001, type=float, help="""Learning rate at the beginning of
+    parser.add_argument("--lr", default=0.003, type=float, help="""Learning rate at the beginning of
         training (highest LR used during training). The learning rate is linearly scaled
         with the batch size, and specified here for a reference batch size of 256.
         We recommend tweaking the LR depending on the checkpoint evaluated.""")
-    parser.add_argument('--batch_size', default=16, type=int, help='total batch-size')
+    parser.add_argument('--batch_size', default=32, type=int, help='total batch-size')
     parser.add_argument('--data_path', default='../data/small', type=str)
     parser.add_argument('--num_workers', default=10, type=int, help='Number of data loading workers per GPU.')
     parser.add_argument('--val_freq', default=1, type=int, help="Epoch frequency for validation.")
