@@ -328,7 +328,8 @@ def train_one_epoch(
         metric_logger.update(wd=optimizer._param_groups[0]["weight_decay"])
 
     # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
+    if dist.is_initialized():
+        metric_logger.synchronize_between_processes()
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
