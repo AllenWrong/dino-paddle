@@ -246,10 +246,14 @@ def train_dino(args):
 
         if fp16_scaler is not None:
             save_dict['fp16_scaler'] = fp16_scaler.state_dict()
+
+        if dist.get_rank() == 0:
+            path = os.path.join(args.output_dir, f'dino_deitsmall16_pretrain_full_ckp_epoch_{epoch}.pdparams')
+            paddle.save(save_dict, path)
         
         if epoch == args.epochs or epoch % args.saveckp_freq == 0:
             if dist.get_rank() == 0:
-                path = os.path.join(args.output_dir, 'dino_deitsmall16_pretrain_full_ckp.pdparams')
+                path = os.path.join(args.output_dir, f'dino_deitsmall16_pretrain_full_ckp_epoch_{epoch}.pdparams')
                 paddle.save(save_dict, path)
 
         epoch_end_time = time.time()
