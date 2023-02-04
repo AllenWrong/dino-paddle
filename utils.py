@@ -46,12 +46,12 @@ def restart_from_checkpoint(ckp_path, run_variables=None, **kwargs):
     for key, value in kwargs.items():
         if key in checkpoint and value is not None:
             try:
-                msg = value.load_dict(checkpoint[key], strict=False)
+                msg = value.set_state_dict(checkpoint[key])
                 print("=> loaded '{}' from checkpoint '{}' with msg {}".format(key, ckp_path, msg))
-            except TypeError:
+            except Exception:
                 try:
-                    msg = value.load_dict(checkpoint[key])
-                    print("=> loaded '{}' from checkpoint: '{}'".format(key, ckp_path))
+                    msg = value.load_state_dict(checkpoint[key])
+                    print("=> loaded '{}' from checkpoint: '{}' with msg{}".format(key, ckp_path, msg))
                 except ValueError:
                     print("=> failed to load '{}' from checkpoint: '{}'".format(key, ckp_path))
         else:
@@ -62,7 +62,7 @@ def restart_from_checkpoint(ckp_path, run_variables=None, **kwargs):
         for var_name in run_variables:
             if var_name in checkpoint:
                 run_variables[var_name] = checkpoint[var_name]
-
+                
 
 def cosine_scheduler(base_value, final_value, epochs, niter_per_ep, warmup_epochs=0, start_warmup_value=0):
     warmup_schedule = np.array([])
