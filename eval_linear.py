@@ -85,13 +85,16 @@ def eval_linear(args):
 
     # optionally resume from a checkpoint
     to_restore = {"epoch": 0, "best_acc": 0.}
-    # utils.restart_from_checkpoint(
-    #     os.path.join(args.output_dir, "checkpoint.pth.tar"),
-    #     run_variables=to_restore,
-    #     state_dict=linear_clf,
-    #     optimizer=optimizer,
-    #     scheduler=scheduler,
-    # )
+    if args.resume_path != "":
+        utils.restart_from_checkpoint(
+            os.path.join(args.resume_path),
+            run_variables=to_restore,
+            state_dict=linear_clf,
+            optimizer=optimizer,
+            scheduler=scheduler,
+        )
+        print(f"resume from epoch {to_restore['epoch']}")
+
     start_epoch = to_restore["epoch"]
     best_acc = to_restore["best_acc"]
 
@@ -102,7 +105,8 @@ def eval_linear(args):
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      'epoch': epoch}
-
+        
+        # val_freq = 1 (default)
         if epoch % args.val_freq == 0 or epoch == args.epochs - 1:
             test_stats = valid(val_loader, model, linear_clf, args.n_last_blocks, args.avgpool_patchtokens)
             best_acc = max(best_acc, test_stats["acc1"])
@@ -164,6 +168,10 @@ def valid(valid_loader, model, linear_clf, n_last_blocks, avgpool_patchtokens):
         if args.num_labels >= 5:
             metrics_logger.meters['acc5'].update(acc5.item(), n=batch_size)
     
+    # gather the stats from all processes
+    if dist.is_initialized():
+        metrics_logger.synchronize_between_processes()
+    
     return {k: meter.global_avg for k, meter in metrics_logger.meters.items()}
 
 
@@ -220,6 +228,7 @@ if __name__ == '__main__':
     parser.add_argument('--pretrained_weights', default='./dino_deitsmall16_pretrain_full_ckp.pdparams',
                         type=str, help="Path to pretrained weights to evaluate.")
     parser.add_argument('--pretrained_linear', default='', type=str, help='Path to pretrained linear clf weights.')
+    parser.add_argument('--resume_path', default='', type=str, help='Path to checkpoint.')
     parser.add_argument("--checkpoint_key", default="teacher", type=str, help='Key to use in the checkpoint (example: "teacher")')
     parser.add_argument('--epochs', default=100, type=int, help='Number of epochs of training.')
     parser.add_argument("--lr", default=0.003, type=float, help="""Learning rate at the beginning of
