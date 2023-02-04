@@ -23,7 +23,7 @@ class ImageNet2012Dataset(Dataset):
         self.label_list = []
 
         if mode == "train":
-            self.list_file = os.path.join(self.file_folder, "train.txt")
+            self.list_file = os.path.join(self.file_folder, "train_list.txt")
         else:
             self.list_file = os.path.join(self.file_folder, "val_list.txt")
 
