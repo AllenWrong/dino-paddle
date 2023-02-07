@@ -117,7 +117,7 @@ def eval_linear(args):
             print(log_stats)
 
         if dist.get_rank() == 0:
-            with open("train_linear_log.txt", "a") as f:
+            with open(os.path.join(args.output_dir, "train_linear_log.txt"), "a") as f:
                 f.write(json.dumps(log_stats) + "\n")
 
             save_dict = {
