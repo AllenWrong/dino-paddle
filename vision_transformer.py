@@ -17,7 +17,7 @@ https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/vision
 """
 import math
 from functools import partial
-
+from .layer import *
 import numpy as np
 import paddle
 import paddle.nn as nn
@@ -33,7 +33,7 @@ ones_ = Constant(value=1.)
 def vit_small(patch_size=16, **kwargs):
     model = VisionTransformer(
         patch_size=patch_size, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4,
-        qkv_bias=True, norm_layer=partial(nn.LayerNorm, epsilon=1e-6), **kwargs)
+        qkv_bias=True, norm_layer=partial(LayerNorm, epsilon=1e-6), **kwargs)
     return model
 
 
@@ -65,10 +65,10 @@ class Mlp(nn.Layer):
         super(Mlp, self).__init__()
         out_features = out_features or in_features
         # fc1
-        self.fc1 = nn.Linear(in_features,
+        self.fc1 = Linear(in_features,
                              hidden_features)
         # fc2
-        self.fc2 = nn.Linear(hidden_features,
+        self.fc2 = Linear(hidden_features,
                              out_features)
 
         self.act = act_layer()  # GELU > ELU > ReLU > sigmod
@@ -93,12 +93,12 @@ class Attention(nn.Layer):
         self.scales = qk_scale or self.attn_head_size ** -0.5
 
         # calculate qkv
-        self.qkv = nn.Linear(
+        self.qkv = Linear(
             dim, self.all_head_size * 3,  # weight for Q K V
             bias_attr=qkv_bias)
 
         # calculate proj
-        self.proj = nn.Linear(dim, dim)
+        self.proj = Linear(dim, dim)
 
         self.attn_dropout = nn.Dropout(attn_drop)
         self.proj_dropout = nn.Dropout(proj_drop)
@@ -135,7 +135,7 @@ class Attention(nn.Layer):
 
 class Block(nn.Layer):
     def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm):
+                 drop_path=0., act_layer=nn.GELU, norm_layer=LayerNorm):
         super().__init__()
         self.norm1 = norm_layer(dim)
         self.attn = Attention(
@@ -165,7 +165,7 @@ class PatchEmbed(nn.Layer):
         self.patch_size = patch_size
         self.num_patches = num_patches
 
-        self.proj = nn.Conv2D(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
+        self.proj = Conv2D(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
 
     def forward(self, x):
         B, C, H, W = x.shape
@@ -178,7 +178,7 @@ class VisionTransformer(nn.Layer):
 
     def __init__(self, img_size=[224], patch_size=16, in_chans=3, num_classes=0, embed_dim=768, depth=12,
                  num_heads=12, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0., norm_layer=nn.LayerNorm, **kwargs):
+                 drop_path_rate=0., norm_layer=LayerNorm, **kwargs):
         super().__init__()
         self.num_features = self.embed_dim = embed_dim
 
@@ -209,16 +209,16 @@ class VisionTransformer(nn.Layer):
         self.norm = norm_layer(embed_dim)
 
         # Classifier head
-        self.head = nn.Linear(embed_dim, num_classes) if num_classes > 0 else nn.Identity()
+        self.head = Linear(embed_dim, num_classes) if num_classes > 0 else nn.Identity()
 
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
-        if isinstance(m, nn.Linear):
+        if isinstance(m, Linear):
             trunc_normal_(m.weight)
-            if isinstance(m, nn.Linear) and m.bias is not None:
+            if isinstance(m, Linear) and m.bias is not None:
                 zeros_(m.bias)
-        elif isinstance(m, nn.LayerNorm):
+        elif isinstance(m, LayerNorm):
             zeros_(m.bias)
             ones_(m.weight)
 
@@ -282,4 +282,3 @@ class VisionTransformer(nn.Layer):
             if len(self.blocks) - i <= n:
                 output.append(self.norm(x))
         return output
-
